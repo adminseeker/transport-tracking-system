@@ -1,8 +1,10 @@
 const express = require("express");
 const connectToMongoDB = require("./db/mongoose");
+const connectToMySQL = require("./db/mysql");
 
 const app = express();
 connectToMongoDB();
+connectToMySQL();
 
 const port = process.env.PORT || 3000;
 
