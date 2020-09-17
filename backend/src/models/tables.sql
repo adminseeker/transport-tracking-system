@@ -13,7 +13,7 @@ CREATE TABLE users(
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
-    email VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
     passwd VARCHAR(255),
     date_of_birth DATE,
     gender VARCHAR(255),

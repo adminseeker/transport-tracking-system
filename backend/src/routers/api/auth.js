@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcryptjs");
 
 const {mysql} = require("../../db/mysql");
 const auth = require("../../middleware/auth");
@@ -22,7 +23,7 @@ router.get("/",auth,async (req,res)=>{
 
 router.post("/login",async (req,res)=>{
     try {
-        await mysql.query("SELECT id,email,passwd FROM users WHERE email = ?",[req.body.email],(error,results,fields)=>{
+        await mysql.query("SELECT id,email,passwd FROM users WHERE email = ?",[req.body.email],async (error,results,fields)=>{
             if(error) throw error;
             if(results.length==0){
                 return res.json({msg:"Authentication Error!"});
@@ -30,7 +31,8 @@ router.post("/login",async (req,res)=>{
             const userString = JSON.stringify(results[0]);
             const user_data = JSON.parse(userString);
             const user = {id:user_data.id,email:user_data.email}
-            if(user_data.passwd === req.body.password){
+            const isMatch = await bcrypt.compare(req.body.password,user_data.passwd);
+            if(isMatch){
                 generateAuthToken(user,(token)=>{
                 res.json({token,user});
                 });   

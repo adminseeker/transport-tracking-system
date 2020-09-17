@@ -11,6 +11,7 @@ connectToMySQL();
 app.use(express.json());
 
 app.use("/api/auth/",require("./routers/api/auth"));
+app.use("/api/users/",require("./routers/api/users"));
 
 app.get("/",async (req,res)=>{
     await res.send("Welcome to transport tracking system!");
