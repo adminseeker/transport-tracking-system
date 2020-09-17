@@ -6,7 +6,10 @@ const JourneySchema = mongoose.Schema({
         require:true
     },
     path:[{
-        location:{
+        location_name:{
+            type:String
+        },
+        location_data:{
             type:String
         }
     }]
