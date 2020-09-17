@@ -10,9 +10,11 @@ const CommentSchema = mongoose.Schema({
     },
     journey_id:{
         type:Number,
+        require:true
     },
     user_id:{
-        type:Number
+        type:Number,
+        require:true
     }
 })
 
