@@ -6,7 +6,7 @@ CREATE TABLE root_users(
     last_name VARCHAR(255),
     email VARCHAR(255),
     passwd VARCHAR(255),
-    created_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users(
@@ -17,7 +17,7 @@ CREATE TABLE users(
     passwd VARCHAR(255),
     date_of_birth DATE,
     gender VARCHAR(255),
-    created_at TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE vehicles(
