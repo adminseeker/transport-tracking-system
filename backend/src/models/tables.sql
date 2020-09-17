@@ -37,14 +37,20 @@ CREATE TABLE updaters(
     FOREIGN KEY(vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 );
 
-CREATE TABLE passengers(
+CREATE TABLE journey(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
     vehicle_id INT,
     starting_point VARCHAR(255),
     destination VARCHAR(255),
     start_time TIMESTAMP,
     end_time TIMESTAMP,
-    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY(vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
+);
+
+CREATE TABLE passengers(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    journey_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (journey_id) REFERENCES journey(id) ON DELETE CASCADE
 );
