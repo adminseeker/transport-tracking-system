@@ -12,6 +12,7 @@ app.use(express.json());
 
 app.use("/api/auth/",require("./routers/api/auth"));
 app.use("/api/users/",require("./routers/api/users"));
+app.use("/api/vehicles/",require("./routers/api/vehicles"));
 
 app.get("/",async (req,res)=>{
     await res.send("Welcome to transport tracking system!");
