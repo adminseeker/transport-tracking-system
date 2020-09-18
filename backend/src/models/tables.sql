@@ -17,6 +17,7 @@ CREATE TABLE users(
     passwd VARCHAR(255),
     date_of_birth DATE,
     gender VARCHAR(255),
+    isUpdater INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -23,14 +23,14 @@ router.get("/",auth,async (req,res)=>{
 
 router.post("/login",async (req,res)=>{
     try {
-        await mysql.query("SELECT id,email,passwd FROM users WHERE email = ?",[req.body.email],async (error,results,fields)=>{
+        await mysql.query("SELECT id,email,passwd,isUpdater FROM users WHERE email = ?",[req.body.email],async (error,results,fields)=>{
             if(error) throw error;
             if(results.length==0){
                 return res.json({msg:"Authentication Error!"});
             }
             const userString = JSON.stringify(results[0]);
             const user_data = JSON.parse(userString);
-            const user = {id:user_data.id,email:user_data.email}
+            const user = {id:user_data.id,email:user_data.email,isUpdater:user_data.isUpdater}
             const isMatch = await bcrypt.compare(req.body.password,user_data.passwd);
             if(isMatch){
                 generateAuthToken(user,(token)=>{

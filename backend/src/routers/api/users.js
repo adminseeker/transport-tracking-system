@@ -19,9 +19,9 @@ router.post("/",async (req,res)=>{
         });
         const salt = await bcrypt.genSalt(10);
         user_body.password = await bcrypt.hash(user_body.password,salt);
-        await mysql.query("INSERT INTO users (first_name,last_name,email,passwd,gender,date_of_birth) VALUES (?)",[[user_body.first_name,user_body.last_name,user_body.email,user_body.password,user_body.gender,user_body.date_of_birth]],(error,results,fields)=>{
+        await mysql.query("INSERT INTO users (first_name,last_name,email,passwd,gender,date_of_birth,isUpdater) VALUES (?)",[[user_body.first_name,user_body.last_name,user_body.email,user_body.password,user_body.gender,user_body.date_of_birth,user_body.isUpdater]],(error,results,fields)=>{
             if(error) throw error;
-            let user = {id:user_body.id,email:user_body.email};
+            let user = {id:user_body.id,email:user_body.email,isUpdater:user_body.isUpdater};
             generateAuthToken(user,(token)=>{
                 delete user_body.password;
                 user = user_body;
