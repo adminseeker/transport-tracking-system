@@ -60,7 +60,7 @@ router.patch("/update/:id",auth,async (req,res)=>{
                 const vehicleString = JSON.stringify(results);
                 const vehicle = JSON.parse(vehicleString);
                 if(vehicle.length===0){
-                    res.json({msg:"no vehicle found"});
+                    res.json({msg:"no vehicle found!"});
                 }
                 else{
                     if(req.body.vehicle_number){
@@ -70,6 +70,7 @@ router.patch("/update/:id",auth,async (req,res)=>{
                                  res.status(400).json({msg:"This vehicle number already exists!"});
                             }else{
                                 await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id],(error,results,fields)=>{
+                                    if(error) throw error;
                                     res.json({msg:"update successfull!"});
                                 });
                             }
@@ -80,6 +81,32 @@ router.patch("/update/:id",auth,async (req,res)=>{
         }else{
             res.json({msg:"Authorization Error!"});
         }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.delete("/:id",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===1){
+            await mysql.query("SELECT * FROM vehicles JOIN updaters ON vehicles.id=updaters.vehicle_id WHERE vehicles.id = ? AND updaters.user_id = ?;",[req.params.id,req.user.id],async (error,results,fields)=>{
+                const vehicleString = JSON.stringify(results);
+                const vehicle = JSON.parse(vehicleString);
+                if(vehicle.length===0){
+                    res.json({msg:"no vehicle found!"});
+                }
+                else{
+                    await mysql.query("DELETE FROM vehicles WHERE vehicles.id = ?",[req.params.id],(error,results,fields)=>{
+                        if(error) throw error;
+                        res.json({msg:"deleted vehicle successfully!"})
+                    }); 
+                }
+            });
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+        
     } catch (error) {
         console.log(error);
         res.status(500).send(error);
