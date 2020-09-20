@@ -45,6 +45,7 @@ CREATE TABLE journey(
     destination VARCHAR(255),
     start_time TIMESTAMP,
     end_time TIMESTAMP,
+    isActive INT,
     FOREIGN KEY(vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
 );
 
