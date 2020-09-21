@@ -40,5 +40,30 @@ router.post("/:id",auth,async (req,res)=>{
     }
 });
 
+router.get("/:id",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===1){
+            await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id],async (error,results,fields)=>{
+                if(error) throw error;
+                if( results.length==0){
+                     res.status(400).json({msg:"No vehicle found!"});
+                }else{
+                    await mysql.query("SELECT * FROM journey WHERE vehicle_id = ? ",[req.params.id],(error,results,fields)=>{
+                        if(error)throw error
+                        const journeyString = JSON.stringify(results);
+                        const journey = JSON.parse(journeyString);
+                        res.json(journey);
+                    })
+                }
+            });
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
 module.exports = router;
 
