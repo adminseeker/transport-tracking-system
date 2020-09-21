@@ -65,5 +65,40 @@ router.get("/:id",auth,async (req,res)=>{
     }
 });
 
+router.patch("/:id1/update/:id2",auth,async (req,res)=>{
+    try {
+        const journey= req.body;
+        if(req.user.isUpdater===1){
+            await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id1],async (error,results,fields)=>{
+                if(error) throw error;
+                if( results.length==0){
+                     res.status(400).json({msg:"No vehicle found!"});
+                }else{
+                    await mysql.query("SELECT * FROM journey WHERE journey.id=?",[req.params.id2],async (error,results,fields)=>{
+                        if(error) throw error;
+                        if( results.length==0){
+                            res.status(400).json({msg:"No journey found!"});
+                       }else{
+                            delete req.body.vehicle_id;
+                            await mysql.query("UPDATE journey SET ? WHERE journey.id = ?",[req.body,req.params.id2],(error,results,fields)=>{
+                                if(error) throw error;
+                                res.json({msg:"update successfull!"});
+                            });
+                       }
+                    });
+                }
+            });
+
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);   
+    }
+});
+
+
 module.exports = router;
 
