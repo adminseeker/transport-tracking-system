@@ -99,6 +99,31 @@ router.patch("/:id1/update/:id2",auth,async (req,res)=>{
     }
 });
 
+router.delete("/:id1/delete/:id2",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===1){
+            await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id1],async (error,results,fields)=>{
+                if(error) throw error;
+                if( results.length==0){
+                     res.status(400).json({msg:"No vehicle found!"});
+                }else{
+                    await mysql.query("DELETE FROM journey WHERE journey.id = ?",[req.params.id2],(error,results,fields)=>{
+                        if(error) throw error;
+                        res.json({msg:"deleted journey  successfully!"});
+                    });
+                }
+            });
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+
 
 module.exports = router;
 
