@@ -55,7 +55,7 @@ router.patch("/:id1/update/:id2",auth,async (req,res)=>{
             if( results.length==0){
                    return res.status(400).json({msg:"No vehicle found!"});
             }else{
-                const[results,fields] = await mysql.query("SELECT * FROM journey WHERE journey.id=?",[req.params.id2]);
+                const[results,fields] = await mysql.query("SELECT * FROM journey WHERE journey.id=? AND journey.vehicle_id = ?",[req.params.id2,req.params.id1]);
                 if( results.length==0){
                     return res.status(400).json({msg:"No journey found!"});
                 }else{
