@@ -80,7 +80,10 @@ router.delete("/:id1/delete/:id2",auth,async (req,res)=>{
             if( results.length==0){
                 return res.status(400).json({msg:"No vehicle found!"});
             }else{
-                const[results,fields] = await mysql.query("DELETE FROM journey WHERE journey.id = ?",[req.params.id2]);
+                const[results,fields] = await mysql.query("DELETE FROM journey WHERE journey.vehicle_id = ? AND journey.id = ?",[req.params.id1,req.params.id2]);
+                if(results.affectedRows==0){
+                    return res.json({msg:"no journey found!"})
+                };
                 res.json({msg:"deleted journey  successfully!"});
             }
         }else{
