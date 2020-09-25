@@ -29,11 +29,10 @@ router.post("/:id",auth,async (req,res)=>{
 router.get("/:id",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
-            const[results,fields] = await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id]);
+            const[results,fields] = await mysql.query("SELECT journey.id,journey.vehicle_id,starting_point,destination,start_time,end_time,isActive FROM journey INNER JOIN updaters ON journey.vehicle_id = updaters.vehicle_id WHERE updaters.user_id = ? AND journey.vehicle_id=?;",[req.user.id,req.params.id]);
             if( results.length==0){
-                    return res.status(400).json({msg:"No vehicle found!"});
+                    return res.status(400).json({msg:"No journey found!"});
             }else{
-                const[results,fields] = await mysql.query("SELECT * FROM journey WHERE vehicle_id = ? ",[req.params.id]);
                 const journeyString = JSON.stringify(results);
                 const journey = JSON.parse(journeyString);
                 res.json(journey);
@@ -47,22 +46,17 @@ router.get("/:id",auth,async (req,res)=>{
     }
 });
 
-router.patch("/:id1/update/:id2",auth,async (req,res)=>{
+router.patch("/:id1/:id2",auth,async (req,res)=>{
     try {
         const journey= req.body;
         if(req.user.isUpdater===1){
-            const[results,fields] = await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id1]);
+            const[results,fields] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
             if( results.length==0){
-                   return res.status(400).json({msg:"No vehicle found!"});
+                return res.status(400).json({msg:"No journey found!"});
             }else{
-                const[results,fields] = await mysql.query("SELECT * FROM journey WHERE journey.id=? AND journey.vehicle_id = ?",[req.params.id2,req.params.id1]);
-                if( results.length==0){
-                    return res.status(400).json({msg:"No journey found!"});
-                }else{
-                    delete req.body.vehicle_id;
-                    const[results,fields] = await mysql.query("UPDATE journey SET ? WHERE journey.id = ?",[req.body,req.params.id2]);
-                    res.json({msg:"update successfull!"});
-                }
+                delete req.body.vehicle_id;
+                const[results,fields] = await mysql.query("UPDATE journey SET ? WHERE journey.id = ?",[req.body,req.params.id2]);
+                res.json({msg:"update successfull!"});
             }
         }else{
             res.json({msg:"Authorization Error!"});
@@ -73,12 +67,12 @@ router.patch("/:id1/update/:id2",auth,async (req,res)=>{
     }
 });
 
-router.delete("/:id1/delete/:id2",auth,async (req,res)=>{
+router.delete("/:id1/:id2",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
-            const[results,fields] = await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id1]);
+            const[results,fields] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
             if( results.length==0){
-                return res.status(400).json({msg:"No vehicle found!"});
+                return res.status(400).json({msg:"No journey found!"});
             }else{
                 const[results,fields] = await mysql.query("DELETE FROM journey WHERE journey.vehicle_id = ? AND journey.id = ?",[req.params.id1,req.params.id2]);
                 if(results.affectedRows==0){

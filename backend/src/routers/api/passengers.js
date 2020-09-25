@@ -8,15 +8,11 @@ const router = express.Router();
 router.post("/:id1/:id2",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
-            const[checkResults] = await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id1]);
+            const[checkResults] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
             if( checkResults.length==0){
-                return res.status(400).json({msg:"No vehicle found!"});
-            }
-            const[checkResults2] = await mysql.query("SELECT * FROM journey WHERE vehicle_id=? AND journey.id = ?",[req.params.id1,req.params.id2]);
-            if( checkResults2.length==0){
                 return res.status(400).json({msg:"No journey found!"});
             }
-            const[results,fields] = await mysql.query("SELECT id FROM users WHERE email IN (?) AND isUpdater = 0;",[req.body.emails]);
+            const[results] = await mysql.query("SELECT id FROM users WHERE email IN (?) AND isUpdater = 0;",[req.body.emails]);
             if( results.length==0){
                 return res.status(400).json({msg:"No passengers found!"});
             }else{
@@ -46,16 +42,12 @@ router.post("/:id1/:id2",auth,async (req,res)=>{
 router.get("/:id1/:id2",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
-            const[checkResults] = await mysql.query("SELECT * FROM users INNER JOIN updaters ON users.id = updaters.user_id WHERE user_id= ? AND vehicle_id=?",[req.user.id,req.params.id1]);
+            const[checkResults] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
             if( checkResults.length==0){
-                return res.status(400).json({msg:"No vehicle found!"});
-            }
-            const[checkResults2] = await mysql.query("SELECT * FROM journey WHERE vehicle_id=? AND journey.id = ?",[req.params.id1,req.params.id2]);
-            if( checkResults2.length==0){
                 return res.status(400).json({msg:"No journey found!"});
             }
             else{
-                const[results,fields] = await mysql.query("SELECT user_id,first_name,last_name,email,date_of_birth,gender,journey_id FROM users INNER JOIN passengers ON users.id = passengers.user_id WHERE journey_id=?;",[req.params.id2]);
+                const[results,fields] = await mysql.query("SELECT passengers.id,user_id,first_name,last_name,email,date_of_birth,gender,journey_id FROM users INNER JOIN passengers ON users.id = passengers.user_id WHERE journey_id=?;",[req.params.id2]);
                 const journeyString = JSON.stringify(results);
                 const journey = JSON.parse(journeyString);
                 res.json(journey);
@@ -68,6 +60,55 @@ router.get("/:id1/:id2",auth,async (req,res)=>{
         res.status(500).send(error);
     }
 });
+
+router.delete("/:id1/:id2/:id3",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===1){
+            const[results,fields] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
+            if( results.length==0){
+                return res.status(400).json({msg:"No journey found!"});
+            }else{
+                const[results,fields] = await mysql.query("DELETE FROM passengers WHERE id = ?",[req.params.id3]);
+                if(results.affectedRows==0){
+                    return res.json({msg:"no journey found!"})
+                };
+                res.json({msg:"deleted passenger successfully!"});
+            }
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.delete("/:id1/:id2/all",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===1){
+            const[results,fields] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
+            if( results.length==0){
+                return res.status(400).json({msg:"No journey found!"});
+            }else{
+                const[results,fields] = await mysql.query("DELETE FROM passengers WHERE journey_id=",[req.params.id2]);
+                if(results.affectedRows==0){
+                    return res.json({msg:"no journey found!"})
+                };
+                res.json({msg:"deleted passenger successfully!"});
+            }
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+
+
 
 module.exports = router;
 
