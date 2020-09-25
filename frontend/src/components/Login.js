@@ -11,6 +11,7 @@ const Login = ({isAuthenticated,loading,login,setAlert,history})=>{
         if(submitted && !isAuthenticated)
         setAlert("Invalid credentials!!","danger",6000);
     },[setAlert,submitted,isAuthenticated]);
+    
     const [formData,setFormData] = useState({
         email:"",
         password:""
