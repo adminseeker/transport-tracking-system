@@ -32,7 +32,7 @@ router.post("/login",async (req,res)=>{
         const isMatch = await bcrypt.compare(req.body.password,user_data.passwd);
         if(isMatch){
             generateAuthToken(user,(token)=>{
-                res.json({token,user});
+                res.json({token});
             });   
         }
         else{

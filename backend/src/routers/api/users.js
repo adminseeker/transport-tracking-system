@@ -23,7 +23,7 @@ router.post("/",async (req,res)=>{
             generateAuthToken(user,(token)=>{
                 delete user_body.password;
                 user = user_body;
-                res.json({user,token});
+                res.json({token});
             }); 
         }
     } catch (error) {
