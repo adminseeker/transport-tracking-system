@@ -39,6 +39,25 @@ router.post("/:id1/:id2",auth,async (req,res)=>{
     }
 });
 
+router.get("/me/journey",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===0){
+            const[results] = await mysql.query("SELECT * FROM journey INNER JOIN passengers ON journey.id = passengers.journey_id INNER JOIN vehicles ON journey.vehicle_id = vehicles.id  WHERE passengers.user_id=?",[req.user.id]);
+            if(results.length==0){
+                return res.status(400).json({msg:"No journey found!"});
+            }
+            const journeysString = JSON.stringify(results);
+            const journeys = JSON.parse(journeysString);
+            res.json(journeys);
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
 router.get("/:id1/:id2",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
@@ -95,7 +114,7 @@ router.delete("/:id1/:id2/all",auth,async (req,res)=>{
                 if(results.affectedRows==0){
                     return res.json({msg:"no journey found!"})
                 };
-                res.json({msg:"deleted passenger successfully!"});
+                res.json({msg:"deleted passengers successfully!"});
             }
         }else{
             res.json({msg:"Authorization Error!"});
@@ -106,9 +125,6 @@ router.delete("/:id1/:id2/all",auth,async (req,res)=>{
         res.status(500).send(error);
     }
 });
-
-
-
 
 module.exports = router;
 
