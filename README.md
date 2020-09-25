@@ -1,3 +1,3 @@
-#Transport Tracking System
+# Transport Tracking System
 
-App based MERN stack with gps tracking for transport systems 
+App based on MERN stack with gps tracking for transport systems 
