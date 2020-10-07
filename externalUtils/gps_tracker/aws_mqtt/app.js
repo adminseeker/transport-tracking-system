@@ -30,10 +30,10 @@ client.on("connect", ()=>{
                     console.log(tracking);
                 }else{
                     const updated = await Tracking.findOneAndUpdate({tracker_id},{location});
-                    console.log(tracking);
+                    console.log(updated);
                 }
             } catch (error) {
-                
+                console.log(error);
             }
         }
     });

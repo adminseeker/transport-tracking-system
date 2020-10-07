@@ -3,6 +3,7 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 #include <WiFiManager.h> 
+#include <ESP8266WebServer.h>
 
 //TODO: ESP32 MQTT user config
 //const char* ssid = ".................."; // Wifi SSID
@@ -26,13 +27,29 @@ TinyGPSPlus gps; // The TinyGPS++ object
 SoftwareSerial ss(RXPin, TXPin); // The serial connection to the GPS device
 
 
+
 // setup
 void setup() {
 Serial.begin(115200);
 Serial.println("*****************************************************");
 Serial.println("********** Program Start : ESP32 publishes NEO-6M GPS position over MQTT");
 Serial.print("********** connecting to WIFI : ");
+
+
+
+  WiFiManagerParameter custom_text1("<p>Your Tracking ID is</p>");
+   
+  String tracker = WiFi.macAddress();
+  tracker.replace(":","");
+  char text2[12];
+  tracker.toCharArray(text2,13);
+  Serial.print(text2);
+  WiFiManagerParameter custom_text2(text2);
+  
+  
   WiFiManager wifiManager;
+wifiManager.addParameter(&custom_text1);
+wifiManager.addParameter(&custom_text2); 
   wifiManager.setAPStaticIPConfig(IPAddress(192,168,5,1), IPAddress(192,168,5,1), IPAddress(255,255,255,0));
   wifiManager.autoConnect("gps_tracker");
 Serial.println("Connected to wifi");
@@ -78,13 +95,12 @@ double latitude = (gps.location.lat());
 double longitude = (gps.location.lng());
 
 Serial.println("********** Publish MQTT data to aws6");
-char mqtt_payload[100] = "";
 String tracker_id = WiFi.macAddress();
-Serial.println(WiFi.macAddress());
 tracker_id.replace(":","");
 int tracker_id_len = tracker_id.length()+1;
 char tracker_id_char[tracker_id_len];
 tracker_id.toCharArray(tracker_id_char,tracker_id_len);
+char mqtt_payload[100] = "";
 snprintf (mqtt_payload, 100, "%s;%lf;%lf",tracker_id_char, latitude, longitude);
 Serial.print("Publish message: ");
 Serial.println(mqtt_payload);
