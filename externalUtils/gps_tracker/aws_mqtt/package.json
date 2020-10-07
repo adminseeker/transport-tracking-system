@@ -1,0 +1,17 @@
+{
+  "name": "aws_mqtt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mqtt": "env-cmd -f ./dev.env node ./app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "env-cmd": "^10.1.0",
+    "mongoose": "^5.10.8",
+    "mqtt": "^4.2.1"
+  }
+}

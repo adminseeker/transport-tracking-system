@@ -16,7 +16,7 @@ router.post("/",auth,async (req,res)=>{
                 const[vehicleResults] = await mysql.query("INSERT INTO vehicles (vehicle_name,vehicle_type,vehicle_color,image_url,vehicle_number) VALUES (?)",[[vehicle.vehicle_name,vehicle.vehicle_type,vehicle.vehicle_color,vehicle.image_url,vehicle.vehicle_number]]);
                 const vehicle_id = vehicleResults.insertId;
                 const[updaterResults] = await mysql.query("INSERT INTO updaters (user_id,vehicle_id) VALUES (?)",[[req.user.id,vehicle_id]]);
-                res.json({vehicle,user:req.user,updater_id:updaterResults.insertId});
+                res.json({vehicle,user:req.user});
             }
         }else{
             res.json({msg:"Authorization Error!"});

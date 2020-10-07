@@ -8,6 +8,11 @@ frontend/node_modules/
 
 node_modules/
 
+
+#externalUtils
+externalUtils/gps_tracker/aws_mqtt/node_modules/
+externalUtils/gps_tracker/aws_mqtt/dev.env
+
 # dependencies
 /.pnp
 .pnp.js
