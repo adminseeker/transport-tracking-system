@@ -9,11 +9,15 @@ router.post("/",auth,async (req,res)=>{
     try {
         const vehicle= req.body;
         if(req.user.isUpdater===1){
-            const[results] = await mysql.query("SELECT vehicle_number FROM vehicles WHERE vehicle_number = ?",[vehicle.vehicle_number]);
-            if( results.length!==0 && results[0].vehical_number===vehicle.vehical_number){
+            const[results] = await mysql.query("SELECT vehicle_number,tracker_id FROM vehicles WHERE vehicle_number = ?",[vehicle.vehicle_number]);
+            if( results.length!==0 && results[0].vehical_number===vehicle.vehical_number ){
                 return res.status(400).json({msg:"This vehicle number already exists!"});
-            }else{
-                const[vehicleResults] = await mysql.query("INSERT INTO vehicles (vehicle_name,vehicle_type,vehicle_color,image_url,vehicle_number) VALUES (?)",[[vehicle.vehicle_name,vehicle.vehicle_type,vehicle.vehicle_color,vehicle.image_url,vehicle.vehicle_number]]);
+            }
+            else if( results.length!==0 && results[0].tracker_id===vehicle.tracker_id){
+                return res.status(400).json({msg:"This tracker id already exists!"});
+            }
+            else{
+                const[vehicleResults] = await mysql.query("INSERT INTO vehicles (vehicle_name,vehicle_type,vehicle_color,image_url,vehicle_number,tracker_id,isActive) VALUES (?)",[[vehicle.vehicle_name,vehicle.vehicle_type,vehicle.vehicle_color,vehicle.image_url,vehicle.vehicle_number,vehicle.tracker_id,vehicle.isActive]]);
                 const vehicle_id = vehicleResults.insertId;
                 const[updaterResults] = await mysql.query("INSERT INTO updaters (user_id,vehicle_id) VALUES (?)",[[req.user.id,vehicle_id]]);
                 res.json({vehicle,user:req.user});
@@ -44,6 +48,7 @@ router.get("/",auth,async (req,res)=>{
     }
 });
 
+
 router.patch("/update/:id",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
@@ -58,7 +63,11 @@ router.patch("/update/:id",auth,async (req,res)=>{
                     const[results] = await mysql.query("SELECT vehicle_number FROM vehicles WHERE vehicle_number = ?",[req.body.vehicle_number]);
                     if( results.length!==0 && results[0].vehical_number===vehicle.vehical_number){
                             return res.status(400).json({msg:"This vehicle number already exists!"});
-                    }else{
+                    }
+                    else if( results.length!==0 && results[0].tracker_id===vehicle.tracker_id){
+                        return res.status(400).json({msg:"This tracker id already exists!"});
+                    }
+                    else{
                         const[results] = await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id]);
                             res.json({msg:"update successfull!"});
                     }
