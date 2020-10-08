@@ -7,6 +7,8 @@ import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../components/Dashboard";
 import Header from "../components/Header";
 import Login from "../components/Login";
+import AddVehicles from "../components/AddVehicles";
+import EditVehicle from "../components/EditVehicle";
 
 const history = createHistory();
 
@@ -19,6 +21,8 @@ const AppRouter = ()=>{
                 <Route path="/login" component={Login} exact={true} />
                 <Route path="/register" component={Register} exact={true} />
                 <PrivateRoute path="/dashboard" component={Dashboard} />
+                <PrivateRoute path="/vehicles/add" component={AddVehicles} />
+                <PrivateRoute path="/vehicles/edit/:id" component={EditVehicle} />
             </Switch>
         </Router>
     )

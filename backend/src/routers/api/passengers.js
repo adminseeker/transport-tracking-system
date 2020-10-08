@@ -72,7 +72,7 @@ router.get("/me/track/:id",auth,async (req,res)=>{
                 const tracker = await Tracker.findOne({tracker_id:journey.tracker_id});
                 return res.json(tracker.location);
             }
-            else if(journey.tracker_id==null){
+            else if(journey.tracker_id==null || vehicle.tracker_id==""){
                 return res.json({msg:"No tracking available"});
             }
             else{
