@@ -14,5 +14,6 @@ const connectToMongoDB = async ()=>{
         console.log(error);   
     }
 }
+const mongodbConnection = mongoose.connection;
 
-module.exports = connectToMongoDB;
+module.exports = {connectToMongoDB,mongodbConnection};

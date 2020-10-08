@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
 
 const TrackerSchema = mongoose.Schema({
-    vehicle_id:{
-        type:Number
-    },
     tracker_id:{
         type:String
     },
-    location:[{
+    location:{
         latitude:{
             type:String
         },
         longitude:{
             type:String
         },
-        time:{
+        lastUpdated:{
             type:Date
         }
-    }]
+    }
 })
 
 module.exports = mongoose.model("Tracker",TrackerSchema);

@@ -1,6 +1,8 @@
 const express = require("express");
 
 const {mysql} = require("../../db/mysql");
+const Tracker = require("../../models/Tracker");
+
 const auth = require("../../middleware/auth");
 
 const router = express.Router();
@@ -17,7 +19,7 @@ router.post("/",auth,async (req,res)=>{
                 return res.status(400).json({msg:"This tracker id already exists!"});
             }
             else{
-                const[vehicleResults] = await mysql.query("INSERT INTO vehicles (vehicle_name,vehicle_type,vehicle_color,image_url,vehicle_number,tracker_id,isActive) VALUES (?)",[[vehicle.vehicle_name,vehicle.vehicle_type,vehicle.vehicle_color,vehicle.image_url,vehicle.vehicle_number,vehicle.tracker_id,vehicle.isActive]]);
+                const[vehicleResults] = await mysql.query("INSERT INTO vehicles (vehicle_name,vehicle_type,vehicle_color,image_url,vehicle_number,tracker_id,isRunning) VALUES (?)",[[vehicle.vehicle_name,vehicle.vehicle_type,vehicle.vehicle_color,vehicle.image_url,vehicle.vehicle_number,vehicle.tracker_id,vehicle.isRunning]]);
                 const vehicle_id = vehicleResults.insertId;
                 const[updaterResults] = await mysql.query("INSERT INTO updaters (user_id,vehicle_id) VALUES (?)",[[req.user.id,vehicle_id]]);
                 res.json({vehicle,user:req.user});
@@ -32,12 +34,40 @@ router.post("/",auth,async (req,res)=>{
     }
 });
 
+router.get("/track/:id",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===1){
+            const[results] = await mysql.query("SELECT * FROM vehicles INNER JOIN updaters ON updaters.vehicle_id = vehicles.id WHERE updaters.user_id= ? AND vehicles.id=?",[req.user.id,req.params.id]);
+            if(results.length===0){
+                return res.json({msg:"no vehicle found!"});
+            }
+            const vehicleString = JSON.stringify(results[0]);
+            const vehicle = JSON.parse(vehicleString);
+            if(vehicle.tracker_id==null){
+                return res.json({msg:"No tracking available"});
+            }
+            else{
+                const tracker = await Tracker.findOne({tracker_id:vehicle.tracker_id});
+                return res.json(tracker.location);
+            }
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
 router.get("/",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
-            const[results] = await mysql.query("SELECT * FROM vehicles INNER JOIN updaters ON updaters.vehicle_id = vehicles.id AND updaters.user_id= ? ",[req.user.id]);
+            const[results] = await mysql.query("SELECT * FROM vehicles INNER JOIN updaters ON updaters.vehicle_id = vehicles.id WHERE updaters.user_id= ? ",[req.user.id]);
             const vehiclesString = JSON.stringify(results);
             const vehicles = JSON.parse(vehiclesString);
+            if(vehicles.length===0){
+                return res.json({msg:"no vehicle found!"});
+            }
             res.json(vehicles);
         }else{
             res.json({msg:"Authorization Error!"});
@@ -67,11 +97,12 @@ router.patch("/update/:id",auth,async (req,res)=>{
                     else if( results.length!==0 && results[0].tracker_id===vehicle.tracker_id){
                         return res.status(400).json({msg:"This tracker id already exists!"});
                     }
-                    else{
-                        const[results] = await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id]);
-                            res.json({msg:"update successfull!"});
+                } 
+                else{
+                    const[results] = await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id]);
+                        return res.json({msg:"update successfull!"});
                     }
-                }
+                
             }
         }else{
             res.json({msg:"Authorization Error!"});

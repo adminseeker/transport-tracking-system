@@ -29,7 +29,7 @@ CREATE TABLE vehicles(
     image_url VARCHAR(255),
     vehicle_number VARCHAR(255),
     tracker_id VARCHAR(255) UNIQUE,
-    isActive INT 
+    isRunning INT 
 );
 
 CREATE TABLE updaters(

@@ -1,6 +1,7 @@
 const express = require("express");
 
 const {mysql} = require("../../db/mysql");
+const Tracker = require("../../models/Tracker");
 const auth = require("../../middleware/auth");
 
 const router = express.Router();
@@ -49,6 +50,34 @@ router.get("/me/journey",auth,async (req,res)=>{
             const journeysString = JSON.stringify(results);
             const journeys = JSON.parse(journeysString);
             res.json(journeys);
+        }else{
+            res.json({msg:"Authorization Error!"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+});
+
+router.get("/me/track/:id",auth,async (req,res)=>{
+    try {
+        if(req.user.isUpdater===0){
+            const[results] = await mysql.query("SELECT * FROM journey INNER JOIN passengers ON journey.id = passengers.journey_id INNER JOIN vehicles ON journey.vehicle_id = vehicles.id  WHERE passengers.user_id=? AND journey.id=?",[req.user.id,req.params.id]);
+            if(results.length==0){
+                return res.status(400).json({msg:"No journey found!"});
+            }
+            const journeyString = JSON.stringify(results[0]);
+            const journey = JSON.parse(journeyString);
+            if(journey.isActive){
+                const tracker = await Tracker.findOne({tracker_id:journey.tracker_id});
+                return res.json(tracker.location);
+            }
+            else if(journey.tracker_id==null){
+                return res.json({msg:"No tracking available"});
+            }
+            else{
+                return res.json({msg:"Your journey is inActive"});
+            }
         }else{
             res.json({msg:"Authorization Error!"});
         }
