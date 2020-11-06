@@ -86,4 +86,38 @@ const editVehicles = (vehicle,id)=>{
     }
 }
 
-export {getVehicles,addVehicle,editVehicles};
+const removeVehicles = (id)=>{
+    return async (dispatch)=>{
+        try {
+            const config = {
+                headers:{
+                    "Content-Type":"application/json"
+                }
+            }
+            const res = await axios.delete("/api/vehicles/"+id,config);
+            console.log(res.data);
+            if(res.data.msg){
+                const id = uuid();
+                await dispatch({
+                type:"SET_ALERT",
+                alert:{msg:res.data.msg,alertType:"danger",id}
+            });
+            setTimeout(()=>{
+                dispatch({
+                    type:"REMOVE_ALERT",
+                    id
+                })
+            },3000)
+            }
+            await dispatch(getVehicles());
+        } catch (error) {
+            console.log(error);
+            dispatch({
+                type:"ERROR"
+            })
+        }
+    }
+}
+
+
+export {getVehicles,addVehicle,editVehicles,removeVehicles};

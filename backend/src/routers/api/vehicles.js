@@ -93,21 +93,19 @@ router.patch("/:id",auth,async (req,res)=>{
             else{
                 if(req.body.vehicle_number){
                     const[results] = await mysql.query("SELECT vehicle_number FROM vehicles WHERE vehicle_number = ?",[req.body.vehicle_number]);
-                    if( results.length!==0 && results[0].vehicle_number===vehicle.vehicle_number){
+                    if( results.length!==0 && results[0].vehicle_number===req.body.vehicle_number){
                             return res.json({msg:"This vehicle number already exists!"});
                     }
                 } 
                 if(req.body.tracker_id){
                     const[results] = await mysql.query("SELECT tracker_id FROM vehicles WHERE tracker_id = ?",[req.body.tracker_id]);
-                    if( results.length!==0 && results[0].tracker_id==vehicle.tracker_id){
+                    if( results.length!==0 && results[0].tracker_id==req.body.tracker_id){
                         return res.json({msg:"This tracker id already exists!"});
                     }
-                }else{
-                    
-                        const[results] = await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id]);
-                        return res.json({msg:"update successfull!"});
                 }
-                         
+                    
+                const[results] = await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id]);
+                return res.json({msg:"update successfull!"});         
                 
             }
         }else{
