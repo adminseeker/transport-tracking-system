@@ -1,16 +1,16 @@
 import axios from "axios";
 import {v4 as uuid} from "uuid"
 
-const addVehicle = (vehicle)=>{
+const addJourney = (journey,id)=>{
     return async (dispatch)=>{
         try {
-            const body = JSON.stringify(vehicle);
+            const body = JSON.stringify(journey);
             const config = {
                 headers:{
                     "Content-Type":"application/json"
                 }
             }
-            const res = await axios.post("/api/vehicles/",body,config);
+            const res = await axios.post("/api/journey/"+id,body,config);
             if(res.data.msg){
                 const id = uuid();
                 await dispatch({
@@ -24,7 +24,7 @@ const addVehicle = (vehicle)=>{
                 })
             },3000)
             }
-            await dispatch(getVehicles());
+            await dispatch(getJourneys(id));
         } catch (error) {
             console.log(error);
             dispatch({
@@ -35,13 +35,14 @@ const addVehicle = (vehicle)=>{
 
 }
 
-const getVehicles = ()=>{
+const getJourneys = (id)=>{
     return async (dispatch)=>{
         try {
-            const res = await axios.get("/api/vehicles");
+            const res = await axios.get("/api/journey/"+id);
+            console.log(res.data);
             dispatch({
-                type:"GET_VEHICLES",
-                vehicles:res.data
+                type:"GET_JOURNEYS",
+                journeys:res.data
             })
         } catch (error) {
             console.log(error);
@@ -52,16 +53,16 @@ const getVehicles = ()=>{
     }
 }
 
-const editVehicles = (vehicle,id)=>{
+const editJourney = (journey,id1,id2)=>{
     return async (dispatch)=>{
         try {
-            const body = JSON.stringify(vehicle);
+            const body = JSON.stringify(journey);
             const config = {
                 headers:{
                     "Content-Type":"application/json"
                 }
             }
-            const res = await axios.patch("/api/vehicles/"+id,body,config);
+            const res = await axios.patch("/api/journey/"+id1+"/"+id2,body,config);
             console.log(res.data);
             if(res.data.msg){
                 const id = uuid();
@@ -76,7 +77,7 @@ const editVehicles = (vehicle,id)=>{
                 })
             },3000)
             }
-            await dispatch(getVehicles());
+            await dispatch(getJourneys(id1));
         } catch (error) {
             console.log(error);
             dispatch({
@@ -86,7 +87,7 @@ const editVehicles = (vehicle,id)=>{
     }
 }
 
-const removeVehicles = (id)=>{
+const removeJourney = (id1,id2)=>{
     return async (dispatch)=>{
         try {
             const config = {
@@ -94,8 +95,7 @@ const removeVehicles = (id)=>{
                     "Content-Type":"application/json"
                 }
             }
-            const res = await axios.delete("/api/vehicles/"+id,config);
-            console.log(res.data);
+            const res = await axios.delete("/api/journey/"+id1+"/"+id2,config);
             if(res.data.msg){
                 const id = uuid();
                 await dispatch({
@@ -109,7 +109,7 @@ const removeVehicles = (id)=>{
                 })
             },3000)
             }
-            await dispatch(getVehicles());
+            await dispatch(getJourneys(id1));
         } catch (error) {
             console.log(error);
             dispatch({
@@ -119,5 +119,4 @@ const removeVehicles = (id)=>{
     }
 }
 
-
-export {addVehicle,getVehicles,editVehicles,removeVehicles};
+export {addJourney,getJourneys,editJourney,removeJourney};    

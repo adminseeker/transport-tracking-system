@@ -9,6 +9,9 @@ import Header from "../components/Header";
 import Login from "../components/Login";
 import AddVehicles from "../components/AddVehicles";
 import EditVehicle from "../components/EditVehicle";
+import JourneyDashboard from "../components/JourneyDashboard";
+import AddJourneys from "../components/AddJourneys";
+import EditJourney from "../components/EditJourney";
 
 const history = createHistory();
 
@@ -20,9 +23,12 @@ const AppRouter = ()=>{
                 <Route path="/" component={Landing} exact={true}/>
                 <Route path="/login" component={Login} exact={true} />
                 <Route path="/register" component={Register} exact={true} />
-                <PrivateRoute path="/dashboard" component={Dashboard} />
-                <PrivateRoute path="/vehicles/add" component={AddVehicles} />
-                <PrivateRoute path="/vehicles/edit/:id" component={EditVehicle} />
+                <PrivateRoute path="/dashboard" component={Dashboard} exact={true}/>
+                <PrivateRoute path="/vehicles/add" component={AddVehicles} exact={true}/>
+                <PrivateRoute path="/vehicles/edit/:id" component={EditVehicle} exact={true}/>
+                <PrivateRoute path="/vehicles/:id/journeys/" component={JourneyDashboard} exact={true}/>
+                <PrivateRoute path="/vehicles/:id/journeys/add" component={AddJourneys} exact={true}/>
+                <PrivateRoute path="/journeys/edit/:id" component={EditJourney} exact={true}/>
             </Switch>
         </Router>
     )

@@ -14,7 +14,7 @@ router.post("/:id",auth,async (req,res)=>{
                 return res.status(400).json({msg:"No vehicle found!"});
             }else{
                 const[results,fields] = await mysql.query("INSERT INTO journey (vehicle_id,starting_point,destination,start_time,end_time,isActive) VALUES (?)",[[req.params.id,journey.starting_point,journey.destination,journey.start_time,journey.end_time,journey.isActive]]);
-                res.json({journey,user:req.user,journey_id:results.insertId});
+                res.json({msg:"Journey Added Successfully"});
             }
         }else{
             res.json({msg:"Authorization Error!"});
@@ -31,7 +31,7 @@ router.get("/:id",auth,async (req,res)=>{
         if(req.user.isUpdater===1){
             const[results,fields] = await mysql.query("SELECT journey.id,journey.vehicle_id,starting_point,destination,start_time,end_time,isActive FROM journey INNER JOIN updaters ON journey.vehicle_id = updaters.vehicle_id WHERE updaters.user_id = ? AND journey.vehicle_id=?;",[req.user.id,req.params.id]);
             if( results.length==0){
-                    return res.status(400).json({msg:"No journey found!"});
+                    return res.json([]);
             }else{
                 const journeyString = JSON.stringify(results);
                 const journey = JSON.parse(journeyString);
@@ -50,9 +50,11 @@ router.patch("/:id1/:id2",auth,async (req,res)=>{
     try {
         const journey= req.body;
         if(req.user.isUpdater===1){
+            if(JSON.stringify(req.body)=="{}")
+                return res.json({msg:"nothing to update"});
             const[results,fields] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
             if( results.length==0){
-                return res.status(400).json({msg:"No journey found!"});
+                return res.json({msg:"No journey found!"});
             }else{
                 delete req.body.vehicle_id;
                 const[results,fields] = await mysql.query("UPDATE journey SET ? WHERE journey.id = ?",[req.body,req.params.id2]);

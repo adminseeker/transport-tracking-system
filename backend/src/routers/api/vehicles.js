@@ -66,7 +66,7 @@ router.get("/",auth,async (req,res)=>{
             const vehiclesString = JSON.stringify(results);
             const vehicles = JSON.parse(vehiclesString);
             if(vehicles.length===0){
-                return res.json({msg:"no vehicle found!"});
+                return res.json([]);
             }
             res.json(vehicles);
         }else{
