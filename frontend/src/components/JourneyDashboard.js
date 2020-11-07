@@ -4,7 +4,6 @@ import LoadingPage from "./LoadingPage";
 import { Link } from "react-router-dom";
 import JourneysList from "./JourneysList";
 import {getJourneys} from "../actions/journey";
-import useSWR from "swr";
 
 const JourneyDashboard = ({user,journeys,getJourneys,vehicle_id})=>{
     useEffect(()=>{

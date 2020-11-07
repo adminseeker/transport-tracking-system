@@ -1,16 +1,19 @@
 import axios from "axios";
 import {v4 as uuid} from "uuid"
 
-const addJourney = (journey,id)=>{
-    return async (dispatch)=>{
+const addPassengers =  (passengers,id1,id2)=>{
+    return async(dispatch)=>{
         try {
-            const body = JSON.stringify(journey);
+            const emails = passengers.split(",");
+            const body = JSON.stringify({emails});
             const config = {
                 headers:{
-                    "Content-Type":"application/json"
+                "Content-Type":"application/json"
                 }
             }
-            const res = await axios.post("/api/journey/"+id,body,config);
+            console.log(body);
+            const res = await axios.post("/api/passengers/"+id1+"/"+id2,body,config);
+            console.log(res.data);
             if(res.data.msg){
                 const id = uuid();
                 await dispatch({
@@ -24,25 +27,25 @@ const addJourney = (journey,id)=>{
                 })
             },3000)
             }
-            await dispatch(getJourneys(id));
+            await dispatch(getPassengers(id1,id2));
         } catch (error) {
             console.log(error);
             dispatch({
                 type:"ERROR"
             })
         }
+    
     }
-
 }
 
-const getJourneys = (id)=>{
+const getPassengers = (id1,id2)=>{
     return async (dispatch)=>{
         try {
-            const res = await axios.get("/api/journey/"+id);
+            const res = await axios.get("/api/passengers/"+id1+"/"+id2);
             console.log(res.data);
             dispatch({
-                type:"GET_JOURNEYS",
-                journeys:res.data
+                type:"GET_PASSENGERS",
+                passengers:res.data
             })
         } catch (error) {
             console.log(error);
@@ -53,35 +56,15 @@ const getJourneys = (id)=>{
     }
 }
 
-const getPassengerJourneys = ()=>{
+const removePassenger = (id1,id2,id3)=>{
     return async (dispatch)=>{
         try {
-            const res = await axios.get("/api/passengers/me/journey");
-            console.log(res.data);
-            dispatch({
-                type:"GET_JOURNEYS",
-                journeys:res.data
-            })
-        } catch (error) {
-            console.log(error);
-            dispatch({
-                type:"ERROR"
-            })
-        }        
-    }
-}
-
-const editJourney = (journey,id1,id2)=>{
-    return async (dispatch)=>{
-        try {
-            const body = JSON.stringify(journey);
             const config = {
                 headers:{
                     "Content-Type":"application/json"
                 }
             }
-            const res = await axios.patch("/api/journey/"+id1+"/"+id2,body,config);
-            console.log(res.data);
+            const res = await axios.delete("/api/passengers/"+id1+"/"+id2+"/"+id3,config);
             if(res.data.msg){
                 const id = uuid();
                 await dispatch({
@@ -95,7 +78,7 @@ const editJourney = (journey,id1,id2)=>{
                 })
             },3000)
             }
-            await dispatch(getJourneys(id1));
+            await dispatch(getPassengers(id1,id2));
         } catch (error) {
             console.log(error);
             dispatch({
@@ -105,7 +88,7 @@ const editJourney = (journey,id1,id2)=>{
     }
 }
 
-const removeJourney = (id1,id2)=>{
+const removeAllPassengers = (id1,id2)=>{
     return async (dispatch)=>{
         try {
             const config = {
@@ -113,7 +96,8 @@ const removeJourney = (id1,id2)=>{
                     "Content-Type":"application/json"
                 }
             }
-            const res = await axios.delete("/api/journey/"+id1+"/"+id2,config);
+            const res = await axios.delete("/api/passengers/"+id1+"/"+id2+"/all",config);
+            console.log(id1+","+id2);
             if(res.data.msg){
                 const id = uuid();
                 await dispatch({
@@ -127,7 +111,7 @@ const removeJourney = (id1,id2)=>{
                 })
             },3000)
             }
-            await dispatch(getJourneys(id1));
+            await dispatch(getPassengers(id1,id2));
         } catch (error) {
             console.log(error);
             dispatch({
@@ -137,4 +121,4 @@ const removeJourney = (id1,id2)=>{
     }
 }
 
-export {addJourney,getJourneys,getPassengerJourneys,editJourney,removeJourney};    
+export {addPassengers,getPassengers,removePassenger,removeAllPassengers};

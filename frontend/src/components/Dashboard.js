@@ -4,11 +4,18 @@ import LoadingPage from "./LoadingPage";
 import { Link } from "react-router-dom";
 import VehiclesList from "./VehiclesList";
 import {getVehicles} from "../actions/vehicles";
+import {getPassengerJourneys} from "../actions/journey";
+import UserJourneyList from "./UserJourneyList";
+import useSWR from "swr";
 
-const Dashboard = ({user,vehicles,getVehicles})=>{
-    useEffect(()=>{
-        getVehicles();
-    },[getVehicles]);
+const Dashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
+        useSWR(()=>{
+            if(user.isUpdater){
+                getVehicles();
+            }else{
+                getPassengerJourneys();
+            }
+        },[getVehicles,getPassengerJourneys]);
     return (
         user==null ? <LoadingPage/>        
     :(
@@ -17,6 +24,7 @@ const Dashboard = ({user,vehicles,getVehicles})=>{
             {user.isUpdater===1 &&  <Link to="/vehicles/add">Add Vehicle</Link>}
             {user.isUpdater===1 && <h2>Vehicles List</h2>}
             {user.isUpdater===1 && <VehiclesList />}
+            {user.isUpdater===0 && <UserJourneyList />}
         </div>
     )
       )
@@ -27,4 +35,4 @@ const mapStateToProps = (state)=>({
     vehicles:state.vehicles
 })
 
-export default connect(mapStateToProps,{getVehicles})(Dashboard);
+export default connect(mapStateToProps,{getVehicles,getPassengerJourneys})(Dashboard);

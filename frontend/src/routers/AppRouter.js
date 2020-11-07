@@ -12,6 +12,9 @@ import EditVehicle from "../components/EditVehicle";
 import JourneyDashboard from "../components/JourneyDashboard";
 import AddJourneys from "../components/AddJourneys";
 import EditJourney from "../components/EditJourney";
+import PassengersDashboard from "../components/PassengersDashboard";
+import ViewPassengerDetails from "../components/ViewPassengerDetails";
+import UserJourneyDetails from "../components/UserJourneyDetails";
 
 const history = createHistory();
 
@@ -29,6 +32,9 @@ const AppRouter = ()=>{
                 <PrivateRoute path="/vehicles/:id/journeys/" component={JourneyDashboard} exact={true}/>
                 <PrivateRoute path="/vehicles/:id/journeys/add" component={AddJourneys} exact={true}/>
                 <PrivateRoute path="/journeys/edit/:id" component={EditJourney} exact={true}/>
+                <PrivateRoute path="/vehicles/:id1/journeys/:id2/passengers" component={PassengersDashboard} exact={true}/>
+                <PrivateRoute path="/vehicles/:id1/journeys/:id2/passengers/:id3" component={ViewPassengerDetails} exact={true}/>
+                <PrivateRoute path="/journey/:id" component={UserJourneyDetails} exact={true}/>
             </Switch>
         </Router>
     )
