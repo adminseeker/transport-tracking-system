@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { removeJourney } from "../actions/journey";
 import moment from "moment";
 import { connect } from "react-redux";

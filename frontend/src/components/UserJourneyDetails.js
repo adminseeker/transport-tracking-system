@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import moment from "moment";
 
@@ -19,7 +19,7 @@ const UserJourneyDetails = ({journey}) => {
 }
 
 const mapStateToProps = (state,props)=>({
-    journey: state.journeys.find((journey)=>(journey.journey_id == props.match.params.id))
+    journey: state.journeys.find((journey)=>(String(journey.journey_id) === String(props.match.params.id)))
 })
 
 export default connect(mapStateToProps)(UserJourneyDetails);

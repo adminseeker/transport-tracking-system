@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { removeVehicles } from "../actions/vehicles";
 import { connect } from "react-redux";
 
@@ -10,6 +10,7 @@ const VehiclesListItem = (props)=>(
         </Link>
         <button onClick={async (e)=>{await props.dispatch(removeVehicles(props.vehicle.vehicle_id));}}>Remove</button>
         <Link to={"/vehicles/"+props.vehicle.vehicle_id+"/journeys"}>Manage Journey</Link>
+         <Link to={"/vehicles/track/"+props.vehicle.vehicle_id}>Track Vehicle</Link>
     </div>
 );
 

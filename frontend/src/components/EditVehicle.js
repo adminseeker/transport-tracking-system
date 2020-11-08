@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import VehiclesForm from "./VehiclesForm";
-import {Link} from "react-router-dom";
 import {editVehicles} from "../actions/vehicles";
 
 
@@ -15,7 +14,7 @@ const EditVehiclePage = (props)=>{
 
 const mapStateToProps = (state,props)=>{
     return{
-        vehicle : state.vehicles.filter((vehicle)=>(vehicle.vehicle_id==props.match.params.id))
+        vehicle : state.vehicles.filter((vehicle)=>(String(vehicle.vehicle_id)===String(props.match.params.id)))
     }
 
 };

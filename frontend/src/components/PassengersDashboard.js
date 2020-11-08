@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
 import { getPassengers,addPassengers } from "../actions/passengers";
 import PassengerList from "./PassengerList";
 

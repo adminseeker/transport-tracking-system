@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import moment from "moment";
 
@@ -15,7 +15,7 @@ const ViewPassengerDetails = ({passenger}) => {
 }
 
 const mapStateToProps = (state,props)=>({
-    passenger: state.passengers.find((passenger)=>(passenger.user_id == props.match.params.id3))
+    passenger: state.passengers.find((passenger)=>(String(passenger.user_id) === String(props.match.params.id3)))
 })
 
 export default connect(mapStateToProps)(ViewPassengerDetails);

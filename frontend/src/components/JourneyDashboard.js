@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import {connect} from "react-redux";
-import LoadingPage from "./LoadingPage";
 import { Link } from "react-router-dom";
 import JourneysList from "./JourneysList";
 import {getJourneys} from "../actions/journey";

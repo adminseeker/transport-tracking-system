@@ -1,7 +1,6 @@
 import React from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import { removePassenger} from "../actions/passengers";
-import moment from "moment";
 import { connect } from "react-redux";
 
 const PassengerListItem = (props)=>{

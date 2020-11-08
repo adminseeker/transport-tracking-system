@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import JourneysForm from "./JourneysForm";
-import {Link} from "react-router-dom";
 import {editJourney} from "../actions/journey";
 
 
@@ -18,7 +17,7 @@ const EditJourneyPage = (props)=>{
 
 const mapStateToProps = (state,props)=>{
     return{
-        journey : state.journeys.filter((journey)=>(journey.id==props.match.params.id))
+        journey : state.journeys.filter((journey)=>(String(journey.id)===String(props.match.params.id)))
     }
 
 };

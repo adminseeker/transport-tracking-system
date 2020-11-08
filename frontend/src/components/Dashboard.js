@@ -1,30 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {connect} from "react-redux";
 import LoadingPage from "./LoadingPage";
-import { Link } from "react-router-dom";
-import VehiclesList from "./VehiclesList";
-import {getVehicles} from "../actions/vehicles";
-import {getPassengerJourneys} from "../actions/journey";
-import UserJourneyList from "./UserJourneyList";
-import useSWR from "swr";
+import UserDashboard from "./UserDashboard";
+import UpdaterDashboard from "./UpdaterDashboard";
 
-const Dashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
-        useSWR(()=>{
-            if(user.isUpdater){
-                getVehicles();
-            }else{
-                getPassengerJourneys();
-            }
-        },[getVehicles,getPassengerJourneys]);
+const Dashboard = ({user})=>{
     return (
         user==null ? <LoadingPage/>        
     :(
         <div>
-            <h1>Logged in welcome to Dashboard</h1>
-            {user.isUpdater===1 &&  <Link to="/vehicles/add">Add Vehicle</Link>}
-            {user.isUpdater===1 && <h2>Vehicles List</h2>}
-            {user.isUpdater===1 && <VehiclesList />}
-            {user.isUpdater===0 && <UserJourneyList />}
+            {user.isUpdater===0 &&  <UserDashboard />}
+            {user.isUpdater===1 && <UpdaterDashboard />}
         </div>
     )
       )
@@ -32,7 +18,6 @@ const Dashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
 
 const mapStateToProps = (state)=>({
     user:state.auth.user,
-    vehicles:state.vehicles
 })
 
-export default connect(mapStateToProps,{getVehicles,getPassengerJourneys})(Dashboard);
+export default connect(mapStateToProps)(Dashboard);

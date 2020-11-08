@@ -1,7 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
 import JourneysListItem from "./JourneysListItem";
-import LoadingPage from "./LoadingPage";
 
 const JourneysList = (props)=>(
     <div>
