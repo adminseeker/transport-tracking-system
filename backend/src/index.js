@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const {connectToMongoDB} = require("./db/mongoose");
 
 const app = express();
@@ -14,9 +15,13 @@ app.use("/api/vehicles/",require("./routers/api/vehicles"));
 app.use("/api/journey/",require("./routers/api/journey"));
 app.use("/api/passengers/",require("./routers/api/passengers"));
 
-app.get("/",async (req,res)=>{
-    await res.send("Welcome to transport tracking system!");
-});
+console.log(__dirname);
+    app.use(express.static(path.join(__dirname ,"..","/..","/frontend","/build")));
+
+    app.get("*",(req,res)=>{
+        console.log(path.join(__dirname,"..","..","frontend","build","index.html"));
+        res.sendFile(path.join(__dirname,"..","..","frontend","build","index.html"));
+    })
 
 app.listen(port,()=>{
     console.log("Server started on port "+port);
