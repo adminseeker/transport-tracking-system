@@ -23,10 +23,12 @@ const vehiclesReducer = (state=defaultVehicleState,action)=>{
             return state.filter((vehicle)=>(vehicle.vehicle_id!==action.id));
         case "GET_VEHICLES":
             return action.vehicles;
-        case "ERROR":
+        case "VEHICLES_ERROR":
             return {
                 ...state
             }
+        case "LOGOUT":
+            return []
         default:
             return state;
     }

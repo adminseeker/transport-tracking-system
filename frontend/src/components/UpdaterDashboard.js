@@ -7,15 +7,16 @@ import {getVehicles} from "../actions/vehicles";
 import {getPassengerJourneys} from "../actions/journey";
 import UserJourneyList from "./UserJourneyList";
 import useSWR from "swr";
+import FacebookCircularProgress from "./FacebookCircularProgress";
 
-const UpdaterDashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
+const UpdaterDashboard = ({user,vehicles,getVehicles,getPassengerJourneys,loading})=>{
         useSWR("/dashboard",()=>{
           
                 getVehicles();
           
         });
     return (
-        user==null ? <LoadingPage/>        
+        loading ? <FacebookCircularProgress />       
     :(
         <div>
             <h1>Logged in welcome to Dashboard</h1>
@@ -30,7 +31,8 @@ const UpdaterDashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
 
 const mapStateToProps = (state)=>({
     user:state.auth.user,
-    vehicles:state.vehicles
+    vehicles:state.vehicles,
+    loading:state.auth.loading
 })
 
 export default connect(mapStateToProps,{getVehicles,getPassengerJourneys})(UpdaterDashboard);

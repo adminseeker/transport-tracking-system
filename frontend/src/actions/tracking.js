@@ -17,7 +17,7 @@ const getLocation = (id,isUpdater)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"TRACKING_ERROR"
             })
         }        
     }

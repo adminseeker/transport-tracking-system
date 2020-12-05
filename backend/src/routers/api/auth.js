@@ -24,7 +24,7 @@ router.post("/login",async (req,res)=>{
     try {
         const [results,fields] =  await mysql.query("SELECT id,email,passwd,isUpdater FROM users WHERE email = ?",[req.body.email]);
         if(results.length==0){
-            return res.json({msg:"Authentication Error!"});
+            return res.status(400).json({msg:"Authentication Error!"});
         }
         const userString = JSON.stringify(results[0]);
         const user_data = JSON.parse(userString);
@@ -36,7 +36,7 @@ router.post("/login",async (req,res)=>{
             });   
         }
         else{
-            res.json({msg:"Authentication Error!"});
+            res.status(400).json({msg:"Authentication Error!"});
         }
     } catch (error) {
         res.status(500).send("Server Error!");

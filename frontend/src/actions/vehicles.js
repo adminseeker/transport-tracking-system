@@ -28,7 +28,7 @@ const addVehicle = (vehicle)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"VEHICLES_ERROR"
             })
         }
     }
@@ -46,7 +46,7 @@ const getVehicles = ()=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"VEHICLES_ERROR"
             })
         }        
     }
@@ -80,7 +80,7 @@ const editVehicles = (vehicle,id)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"VEHICLES_ERROR"
             })
         }
     }
@@ -113,7 +113,7 @@ const removeVehicles = (id)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"VEHICLES_ERROR"
             })
         }
     }

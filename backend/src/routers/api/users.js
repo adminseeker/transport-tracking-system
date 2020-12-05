@@ -13,7 +13,7 @@ router.post("/",async (req,res)=>{
         const user_body = req.body;
         const[results,fields] = await mysql.query("SELECT email AS email FROM users WHERE email = ?",[user_body.email])
         if(results.length!==0 && results[0].email===user_body.email){
-            return res.status(400).json({msg:"email already exists!"});
+            return res.json({msg:"Email already registered!"});
         }else{
             const salt = await bcrypt.genSalt(10);
             user_body.password = await bcrypt.hash(user_body.password,salt);

@@ -3,10 +3,11 @@ import {connect} from "react-redux";
 import LoadingPage from "./LoadingPage";
 import UserDashboard from "./UserDashboard";
 import UpdaterDashboard from "./UpdaterDashboard";
+import FacebookCircularProgress from "./FacebookCircularProgress";
 
-const Dashboard = ({user})=>{
+const Dashboard = ({user,loading})=>{
     return (
-        user==null ? <LoadingPage/>        
+        user==null ? <FacebookCircularProgress />        
     :(
         <div>
             {user.isUpdater===0 &&  <UserDashboard />}
@@ -18,6 +19,7 @@ const Dashboard = ({user})=>{
 
 const mapStateToProps = (state)=>({
     user:state.auth.user,
+    loading:state.auth.loading
 })
 
 export default connect(mapStateToProps)(Dashboard);

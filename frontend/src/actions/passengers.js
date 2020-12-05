@@ -31,7 +31,7 @@ const addPassengers =  (passengers,id1,id2)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"PASSENGERS_ERROR"
             })
         }
     
@@ -50,7 +50,7 @@ const getPassengers = (id1,id2)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"PASSENGERS_ERROR"
             })
         }        
     }
@@ -82,7 +82,7 @@ const removePassenger = (id1,id2,id3)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"PASSENGERS_ERROR"
             })
         }
     }
@@ -115,7 +115,7 @@ const removeAllPassengers = (id1,id2)=>{
         } catch (error) {
             console.log(error);
             dispatch({
-                type:"ERROR"
+                type:"PASSENGERS_ERROR"
             })
         }
     }

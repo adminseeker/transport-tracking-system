@@ -2,7 +2,6 @@ import React from "react";
 import {Router, Route, Switch} from "react-router-dom";
 import createHistory from "history/createBrowserHistory"
 import Landing from "../components/Landing";
-import Register from "../components/Register";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../components/Dashboard";
 import Header from "../components/Header";
@@ -16,17 +15,20 @@ import PassengersDashboard from "../components/PassengersDashboard";
 import ViewPassengerDetails from "../components/ViewPassengerDetails";
 import UserJourneyDetails from "../components/UserJourneyDetails";
 import Tracking from "../components/Tracking";
+import RegisterUpdater from "../components/RegisterUpdater";
+import RegisterPassenger from "../components/RegisterPassenger";
 
 const history = createHistory();
 
 const AppRouter = ()=>{
     return(
         <Router history={history}>
-            <Header history={history}/>
+            <Header />
             <Switch>
                 <Route path="/" component={Landing} exact={true}/>
                 <Route path="/login" component={Login} exact={true} />
-                <Route path="/register" component={Register} exact={true} />
+                <Route path="/register/updater" component={RegisterUpdater} exact={true} />
+                <Route path="/register/passenger" component={RegisterPassenger} exact={true} />
                 <PrivateRoute path="/dashboard" component={Dashboard} exact={true}/>
                 <PrivateRoute path="/vehicles/add" component={AddVehicles} exact={true}/>
                 <PrivateRoute path="/vehicles/edit/:id" component={EditVehicle} exact={true}/>

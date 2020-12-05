@@ -27,6 +27,8 @@ const journeysReducer = (state=defaultJourneyState,action)=>{
             return {
                 ...state
             }
+        case "LOGOUT":
+            return []
         default:
             return state;
     }

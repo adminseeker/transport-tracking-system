@@ -12,6 +12,8 @@ const Tracking = ({id,getLocation,location,user}) => {
         // },20000);
     });
     return (
+        location.length===0 ? <h1>No Tracking Available</h1> :
+
         !location.msg ? 
         <div>
             <h3>Latitude: {location.latitude}</h3>

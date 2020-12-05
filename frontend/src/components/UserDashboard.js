@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {connect} from "react-redux";
 import LoadingPage from "./LoadingPage";
 import { Link } from "react-router-dom";
@@ -6,17 +6,14 @@ import VehiclesList from "./VehiclesList";
 import {getVehicles} from "../actions/vehicles";
 import {getPassengerJourneys} from "../actions/journey";
 import UserJourneyList from "./UserJourneyList";
-import useSWR from "swr";
 
-const UserDashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
-        useSWR("/dashboard",()=>{
-
-      
-                getPassengerJourneys();
-     
-        });
+const UserDashboard = ({user,vehicles,loading,getVehicles,getPassengerJourneys})=>{
+        useEffect(()=>{
+            getVehicles();
+            getPassengerJourneys();
+        },[getVehicles,getPassengerJourneys])
     return (
-        user==null ? <LoadingPage/>        
+        loading ? <LoadingPage/>        
     :(
         <div>
             <h1>Logged in welcome to Dashboard</h1>
@@ -31,6 +28,7 @@ const UserDashboard = ({user,vehicles,getVehicles,getPassengerJourneys})=>{
 
 const mapStateToProps = (state)=>({
     user:state.auth.user,
+    loading:state.auth.loading
     
 })
 
