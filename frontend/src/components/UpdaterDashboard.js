@@ -18,10 +18,9 @@ const UpdaterDashboard = ({user,vehicles,getVehicles,getPassengerJourneys,loadin
     return (
         loading ? <FacebookCircularProgress />       
     :(
-        <div>
-            <h1>Logged in welcome to Dashboard</h1>
-            {user.isUpdater===1 &&  <Link to="/vehicles/add">Add Vehicle</Link>}
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
             {user.isUpdater===1 && <h2>Vehicles List</h2>}
+            {user.isUpdater===1 &&  <Link to="/vehicles/add">Add Vehicle</Link>}
             {user.isUpdater===1 && <VehiclesList />}
             {user.isUpdater===0 && <UserJourneyList />}
         </div>
@@ -36,3 +35,4 @@ const mapStateToProps = (state)=>({
 })
 
 export default connect(mapStateToProps,{getVehicles,getPassengerJourneys})(UpdaterDashboard);
+
