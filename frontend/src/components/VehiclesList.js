@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from "react-redux";
-import VehiclesListItem from "./VehiclesListItem";
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -16,8 +15,11 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+
 import VehiclesForm from "./VehiclesForm";
-import { editVehicles } from "../actions/vehicles";
+import { editVehicles, removeVehicles } from "../actions/vehicles";
+import EditIcon from '@material-ui/icons/Edit';
+
 
 const useRowStyles = makeStyles({
     root: {
@@ -44,19 +46,20 @@ const Row = (props) => {
           <TableCell >{vehicle.vehicle_number}</TableCell>
           <TableCell >{vehicle.vehicle_color}</TableCell>
           <TableCell >{vehicle.tracker_id ? vehicle.tracker_id : "N/A"}</TableCell>
-          <TableCell >{vehicle.isRunning}</TableCell>
+          <TableCell >{vehicle.isRunning===1 ? "Yes" : "No"}</TableCell>
           <TableCell >{"Track me"}</TableCell>
           
           <TableCell>
+            
             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
-              {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+              {open ? <KeyboardArrowUpIcon />  : <React.Fragment>  <EditIcon /> </React.Fragment>}
             </IconButton>
           </TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box margin={1}>
+              <Box margin={1} >
                 <Typography variant="h6" gutterBottom component="div">
                 <VehiclesForm vehicle={vehicle} onSubmit={async (updates)=>{await props.dispatch(editVehicles(updates,vehicle.vehicle_id)); setOpen(false);}}/>
                 </Typography>

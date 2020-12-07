@@ -1,6 +1,22 @@
 import React, { useState } from "react";
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import { FormControlLabel, Switch } from "@material-ui/core";
+import Button from '@material-ui/core/Button';
+import { removeVehicles } from "../actions/vehicles";
+import { connect } from "react-redux";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: '15ch',
+    },
+  },
+}));
 
 const VehiclesForm = (props)=>{
+    const classes = useStyles();
     const [vehicle_name,set_vehicle_name] = useState(props.vehicle ? props.vehicle.vehicle_name: "");
     const [vehicle_type,set_vehicle_type] = useState(props.vehicle ? props.vehicle.vehicle_type: "");
     const [vehicle_color,set_vehicle_color] = useState(props.vehicle ? props.vehicle.vehicle_color: "");
@@ -10,7 +26,7 @@ const VehiclesForm = (props)=>{
     const [error,setError] = useState("");
     return(
         <div>
-            <form onSubmit={(e)=>{
+            <form className={classes.root} onSubmit={(e)=>{
                 e.preventDefault();
                 if(!vehicle_name || !vehicle_type || !vehicle_color || !vehicle_number){
                     setError("required");
@@ -45,21 +61,32 @@ const VehiclesForm = (props)=>{
             }
             }}>
                 {error && <p>{error}</p>}
-                <input type="text" autoFocus placeholder="Vehicle Name" value={vehicle_name} onChange={(e)=>{const vehicle_name_val=e.target.value; set_vehicle_name(vehicle_name_val)}}/>
-                <input type="text" autoFocus placeholder="Vehicle type" value={vehicle_type} onChange={(e)=>{const vehicle_type_val=e.target.value; set_vehicle_type(vehicle_type_val)}}/>
-                <input type="text" autoFocus placeholder="Vehicle color" value={vehicle_color} onChange={(e)=>{const vehicle_color_val=e.target.value; set_vehicle_color(vehicle_color_val)}}/>
-                <input type="text" autoFocus placeholder="Vehicle number" value={vehicle_number} onChange={(e)=>{const vehicle_number_val=e.target.value; set_vehicle_number(vehicle_number_val)}}/>
-                <input type="text" autoFocus placeholder="Tracker ID" value={tracker_id} onChange={(e)=>{const tracker_id_val=e.target.value; set_tracker_id(tracker_id_val)}}/>
-                <label htmlFor="isRunning">on journey</label>
-                <input type="checkbox" id="isRunning" name="isRunning" checked={isRunning===1} value={isRunning}  onClick={(e)=>{ 
-                    let isRunning_val;
-                    if(e.target.checked){
-                         isRunning_val=1;
-                    }else{
-                        isRunning_val=0;
+                <TextField id="outlined-basic" label="Vehicle Name" variant="outlined" focused value={vehicle_name} onChange={(e)=>{const vehicle_name_val=e.target.value; set_vehicle_name(vehicle_name_val)}}/>
+                <TextField id="outlined-basic" label="Vehicle Type" variant="outlined" value={vehicle_type} onChange={(e)=>{const vehicle_type_val=e.target.value; set_vehicle_type(vehicle_type_val)}}/>
+                <TextField id="outlined-basic" label="Vehicle Color" variant="outlined" value={vehicle_color} onChange={(e)=>{const vehicle_color_val=e.target.value; set_vehicle_color(vehicle_color_val)}}/>
+                <TextField id="outlined-basic" label="Vehicle number" variant="outlined"  value={vehicle_number} onChange={(e)=>{const vehicle_number_val=e.target.value; set_vehicle_number(vehicle_number_val)}}/>
+                <TextField id="outlined-basic" label="Tracker ID" variant="outlined"  value={tracker_id} onChange={(e)=>{const tracker_id_val=e.target.value; set_tracker_id(tracker_id_val)}}/>
+                <FormControlLabel
+                    control={
+                    <Switch
+                        checked={isRunning===1}
+                        value={isRunning}
+                        color="primary"
+                        onClick={(e)=>{ 
+                            let isRunning_val;
+                            if(e.target.checked){
+                                 isRunning_val=1;
+                            }else{
+                                isRunning_val=0;
+                            }
+                            set_isRunning(isRunning_val)}}
+                    />
                     }
-                    set_isRunning(isRunning_val)}}/>
-                <button type="submit">Save Vehicle</button>
+                    label="On Journey"
+                />
+                <Button variant="contained" color="primary" style={{float:"right"}} type="submit">Save</Button>
+               {props.vehicle && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{await props.dispatch(removeVehicles(props.vehicle.vehicle_id));}}>Remove</Button>}
+
             </form>
             
         </div>
@@ -67,4 +94,5 @@ const VehiclesForm = (props)=>{
         
 }
 
-export default VehiclesForm;
+export default connect()(VehiclesForm);
+
