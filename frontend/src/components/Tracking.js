@@ -2,9 +2,7 @@ import React,{useEffect} from "react";
 import { connect } from "react-redux";
 import moment from "moment";
 import {getLocation} from "../actions/tracking";
-import useSWR from "swr";   
 import FacebookCircularProgress from "./FacebookCircularProgress";
-import { Redirect } from "react-router-dom";
 
 const Tracking = ({id,getLocation,location,user}) => {
     useEffect(()=>{
@@ -12,19 +10,18 @@ const Tracking = ({id,getLocation,location,user}) => {
         // setInterval(()=>{
         //     getLocation(id,user.isUpdater)
         // },20000);
-    },[getLocation,id]);
+    },[getLocation,id,user]);
     return (
         location.length===0 ? <FacebookCircularProgress  /> :
 
         !location.msg ? 
-        <Redirect to={"https://google.com/maps?q="+location.latitude+","+location.longitude}>
-            
-            
-        </Redirect>
-
-        :
         <div>
-           <h1>{location.msg}</h1>
+        <h3>Last Updated At: {moment(location.lastUpdated).format('MMMM Do YYYY, h:mm:ss a')}</h3>
+          <h4><a href={"https://google.com/maps?q="+location.latitude+","+location.longitude} target="_blank" rel="noopener noreferrer">View Location</a></h4>
+        </div>
+          :
+        <div>
+           <h2>{location.msg}</h2>
         </div>
     )
 }

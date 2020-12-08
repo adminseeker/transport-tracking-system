@@ -12,7 +12,7 @@ const addPassengers =  (passengers,id1,id2)=>{
                 }
             }
             console.log(body);
-            const res = await axios.post("/api/passengers/"+id1+"/"+id2,body,config);
+            const res = await axios.post("/api/passengers/"+id1+"/"+id2+"/passengers/invite",body,config);
             console.log(res.data);
             if(res.data.msg){
                 const id = uuid();

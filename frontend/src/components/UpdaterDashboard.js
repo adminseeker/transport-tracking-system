@@ -19,8 +19,7 @@ const UpdaterDashboard = ({user,vehicles,getVehicles,getPassengerJourneys,loadin
         loading ? <FacebookCircularProgress />       
     :(
         <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
-            {user.isUpdater===1 && <h2>Vehicles List</h2>}
-            {user.isUpdater===1 &&  <Link to="/vehicles/add">Add Vehicle</Link>}
+            {user.isUpdater===1 && <h2>Vehicles</h2>}
             {user.isUpdater===1 && <VehiclesList />}
             {user.isUpdater===0 && <UserJourneyList />}
         </div>

@@ -12,9 +12,7 @@ const JourneyDashboard = ({user,journeys,getJourneys,vehicle_id})=>{
     
     return (
   
-        <div>
-            <h1>Journey Dashboard</h1>
-            {user.isUpdater===1 &&  <Link to={"/vehicles/"+vehicle_id+"/journeys/add"}>Create Journey</Link>}
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
             {user.isUpdater===1 && <h2>Journey List</h2>}
             {user.isUpdater===1 && (journeys.length!==0 ? <JourneysList vehicle_id={vehicle_id}/> : <h2>No journey found!!</h2>) }
         </div>

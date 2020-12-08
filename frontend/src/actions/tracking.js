@@ -23,4 +23,12 @@ const getLocation = (id,isUpdater)=>{
     }
 }
 
-export {getLocation};
+const clearLocation = ()=>{
+    return async (dispatch)=>{
+        dispatch({
+            type:"GET_LOCATION",
+            location:[]
+        })
+    }
+}
+export {getLocation,clearLocation};

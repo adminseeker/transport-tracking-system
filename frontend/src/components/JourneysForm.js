@@ -1,15 +1,80 @@
 import React, { useState } from "react";
 
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import { FormControlLabel, Switch } from "@material-ui/core";
+import Button from '@material-ui/core/Button';
+import { removeVehicles } from "../actions/vehicles";
+import { connect } from "react-redux";
+import { removeJourney } from "../actions/journey";
+
+import 'date-fns';
+import Grid from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+
+import AlarmIcon from '@material-ui/icons/Alarm';
+import { IconButton, Typography } from "@material-ui/core";
+
+import moment from "moment";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: '15ch',
+    },
+  },
+}));
+
+const  MaterialUIPickers = (props) => {
+
+    const handleDateChange = async (date) => {
+      props.setSelectedDate(date);
+    };
+  
+    return (
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <KeyboardDatePicker
+            margin="normal"
+            id="date-picker-dialog"
+            label={props.dateLabel}
+            format="dd/MM/yyyy"
+            value={props.selectedDate}
+            onChange={handleDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+          <KeyboardTimePicker
+            margin="normal"
+            id="time-picker"
+            label={props.timeLabel}
+            value={props.selectedDate}
+            onChange={handleDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change time',
+            }}
+          />
+      </MuiPickersUtilsProvider>
+    );
+  }
+
 const JourneysForm = (props)=>{
+    const classes = useStyles();
     const [starting_point,set_starting_point] = useState(props.journey ? props.journey.starting_point: "");
     const [destination,set_destination] = useState(props.journey ? props.journey.destination: "");
-    const [start_time,set_start_time] = useState(props.journey ? props.journey.start_time: "");
-    const [end_time,set_end_time] = useState(props.journey ? props.journey.end_time: "");
+    const [start_time,set_start_time] = useState(props.journey ? props.journey.start_time: new Date());
+    const [end_time,set_end_time] = useState(props.journey ? props.journey.end_time: new Date());
     const [isActive,set_isActive] = useState(props.journey  ? props.journey.isActive: 0);
     const [error,setError] = useState("");
     return(
         <div>
-            <form onSubmit={(e)=>{
+            <form className={classes.root} onSubmit={(e)=>{
                 e.preventDefault();
                 if(!starting_point || !destination || !start_time || !end_time){
                     setError("required");
@@ -18,8 +83,8 @@ const JourneysForm = (props)=>{
                         props.onSubmit({
                             starting_point,
                              destination,
-                             start_time,
-                             end_time,
+                             start_time:start_time.getFullYear()+"-"+(start_time.getMonth()+1)+"-"+start_time.getDate()+" "+start_time.getHours()+":"+start_time.getMinutes()+":"+0,
+                             end_time:end_time.getFullYear()+"-"+(end_time.getMonth()+1)+"-"+end_time.getDate()+" "+end_time.getHours()+":"+end_time.getMinutes()+":"+0,
                              isActive
                          });
                     }else{
@@ -29,9 +94,9 @@ const JourneysForm = (props)=>{
                         if(props.journey.destination!==destination)
                             updatedItems.destination=destination;
                         if(props.journey.start_time!==start_time)
-                            updatedItems.start_time=start_time;
+                            updatedItems.start_time=start_time.getFullYear()+"-"+(start_time.getMonth()+1)+"-"+start_time.getDate()+" "+start_time.getHours()+":"+start_time.getMinutes()+":"+0;
                         if(props.journey.end_time!==end_time)
-                            updatedItems.end_time=end_time;
+                            updatedItems.end_time=end_time.getFullYear()+"-"+(end_time.getMonth()+1)+"-"+end_time.getDate()+" "+end_time.getHours()+":"+end_time.getMinutes()+":"+0;
                         if(props.journey.isActive!==isActive)
                             updatedItems.isActive=isActive;
                         props.onSubmit(updatedItems);
@@ -41,20 +106,30 @@ const JourneysForm = (props)=>{
             }
             }}>
                 {error && <p>{error}</p>}
-                <input type="text" autoFocus placeholder="Starting Location" value={starting_point} onChange={(e)=>{const starting_point_val=e.target.value; set_starting_point(starting_point_val)}}/>
-                <input type="text" autoFocus placeholder="Destination" value={destination} onChange={(e)=>{const destination_val=e.target.value; set_destination(destination_val)}}/>
-                <input type="text" autoFocus placeholder="Starting Time" value={start_time} onChange={(e)=>{const start_time_val=e.target.value; set_start_time(start_time_val)}}/>
-                <input type="text" autoFocus placeholder="Ending Time" value={end_time} onChange={(e)=>{const end_time_val=e.target.value; set_end_time(end_time_val)}}/>
-                <label htmlFor="isActive">Active</label>
-                <input type="checkbox" id="isActive" name="isActive" checked={isActive===1} value={isActive}  onClick={(e)=>{ 
-                    let isActive_val;
-                    if(e.target.checked){
-                         isActive_val=1;
-                    }else{
-                        isActive_val=0;
+                <TextField id="outlined-basic" label="Starting Point" variant="outlined" focused value={starting_point} onChange={(e)=>{const starting_point_val=e.target.value; set_starting_point(starting_point_val)}}/>
+                <TextField id="outlined-basic" label="Destination" variant="outlined"  value={destination} onChange={(e)=>{const destination_val=e.target.value; set_destination(destination_val)}}/>
+                <MaterialUIPickers dateLabel={"Departure Date"} timeLabel={"Departure Time"} selectedDate={start_time} setSelectedDate={set_start_time} />
+                <MaterialUIPickers dateLabel={"Arrival Date"} timeLabel={"Arrival Time"} selectedDate={end_time} setSelectedDate={set_end_time} />
+                <FormControlLabel
+                    control={
+                    <Switch
+                        checked={isActive===1}
+                        value={isActive}
+                        color="primary"
+                        onClick={(e)=>{ 
+                            let isActive_val;
+                            if(e.target.checked){
+                                isActive_val=1;
+                            }else{
+                                isActive_val=0;
+                            }
+                            set_isActive(isActive_val)}}
+                    />
                     }
-                    set_isActive(isActive_val)}}/>
-                <button type="submit">Save Journey</button>
+                    label="Active"
+                />
+                <Button variant="contained" color="primary" style={{float:"right"}} type="submit">Save</Button>
+                {props.journey && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{await props.dispatch(removeJourney(props.vehicle_id,props.journey.id));}}>Remove</Button>}
             </form>
             
         </div>
@@ -62,4 +137,4 @@ const JourneysForm = (props)=>{
         
 }
 
-export default JourneysForm;
+export default connect()(JourneysForm);
