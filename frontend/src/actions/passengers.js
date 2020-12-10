@@ -121,4 +121,25 @@ const removeAllPassengers = (id1,id2)=>{
     }
 }
 
-export {addPassengers,getPassengers,removePassenger,removeAllPassengers};
+const joinJourney = ({invite_id})=>{
+    return async (dispatch)=>{
+        const config = {
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+
+        const body = JSON.stringify({invite_id});
+        try {
+            const res = await axios.post("/api/passengers/join",body,config);
+            return res.data;
+        } catch (err) {
+            console.log(err);
+            dispatch({
+                type:"ERROR"
+            })
+        }
+    }
+}
+
+export {addPassengers,getPassengers,removePassenger,removeAllPassengers,joinJourney};

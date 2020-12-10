@@ -61,7 +61,7 @@ router.post("/:id1/:id2/passengers/invite",auth,async (req,res)=>{
         if(emails.length==0){
             return res.json({"msg":"No emails!"})
         }
-        let emailHTML = "<h2>YOu have been invited to join Tracknet for this journey from "+journey.starting_point+" to "+journey.destination + " departure at " +moment(journey.start_time).format('MMMM Do YYYY, h:mm:ss a') +" and estimated arrival time is at "+moment(journey.end_time).format('MMMM Do YYYY, h:mm:ss a') + ".</h2>\n <p>Your invite code is:</p> ";
+        let emailHTML = "<h2>You have been invited to join Tracknet for this journey from "+journey.starting_point+" to "+journey.destination + " departure at " +moment(journey.start_time).format('MMMM Do YYYY, h:mm:ss a') +" and estimated arrival time is at "+moment(journey.end_time).format('MMMM Do YYYY, h:mm:ss a') + ".</h2>\n <p>Your invite code is:</p> ";
         let subject = "Invite Code for Tracknet";
         let invites=[]
         for(let i=0;i<emails.length;i++){
@@ -138,7 +138,7 @@ router.get("/me/track/:id",auth,async (req,res)=>{
         if(req.user.isUpdater===0){
             const[results] = await mysql.query("SELECT * FROM journey INNER JOIN passengers ON journey.id = passengers.journey_id INNER JOIN vehicles ON journey.vehicle_id = vehicles.id  WHERE passengers.user_id=? AND journey.id=?",[req.user.id,req.params.id]);
             if(results.length==0){
-                return res.status(400).json({msg:"No journey found!"});
+                return res.json({msg:"No journey found!"});
             }
             const journeyString = JSON.stringify(results[0]);
             const journey = JSON.parse(journeyString);
@@ -153,7 +153,7 @@ router.get("/me/track/:id",auth,async (req,res)=>{
                 return res.json({msg:"No tracking available"});
             }
             else{
-                return res.json({msg:"Your journey is inActive"});
+                return res.json({msg:"Your journey is not active!"});
             }
         }else{
             res.json({msg:"Authorization Error!"});

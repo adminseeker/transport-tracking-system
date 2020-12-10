@@ -6,6 +6,8 @@ import VehiclesList from "./VehiclesList";
 import {getVehicles} from "../actions/vehicles";
 import {getPassengerJourneys} from "../actions/journey";
 import UserJourneyList from "./UserJourneyList";
+import FacebookCircularProgress from "./FacebookCircularProgress";
+import { Typography } from "@material-ui/core";
 
 const UserDashboard = ({user,vehicles,loading,getVehicles,getPassengerJourneys})=>{
         useEffect(()=>{
@@ -13,14 +15,13 @@ const UserDashboard = ({user,vehicles,loading,getVehicles,getPassengerJourneys})
             getPassengerJourneys();
         },[getVehicles,getPassengerJourneys])
     return (
-        loading ? <LoadingPage/>        
+        loading ? <FacebookCircularProgress />       
     :(
-        <div>
-            <h1>Logged in welcome to Dashboard</h1>
-            {user.isUpdater===1 &&  <Link to="/vehicles/add">Add Vehicle</Link>}
-            {user.isUpdater===1 && <h2>Vehicles List</h2>}
-            {user.isUpdater===1 && <VehiclesList />}
-            {user.isUpdater===0 && <UserJourneyList />}
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",marginTop:"3rem"}}>
+            <Typography variant="h4" style={{marginBottom:"2rem"}}>
+                Journey List
+            </Typography>
+            <UserJourneyList />
         </div>
     )
       )

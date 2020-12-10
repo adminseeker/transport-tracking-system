@@ -42,6 +42,9 @@ import { Link as RouterLink } from "react-router-dom";
 import { addJourney, editJourney } from "../actions/journey";
 import JourneysForm from "./JourneysForm";
 
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+
+
 
 
 const useRowStyles = makeStyles({
@@ -139,7 +142,7 @@ const Row = (props) => {
           <TableCell >{moment(journey.start_time).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
           <TableCell >{moment(journey.end_time).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
           <TableCell >{journey.isActive===1 ? "Yes" : "No"}</TableCell>
-          <TableCell >{<Link component={RouterLink} to={"/vehicles/"+props.vehicle_id+"/journeys/"+journey.id+"/passengers"}>{"Passengers"}</Link>}</TableCell>
+          <TableCell >{<Link component={RouterLink} to={"/vehicles/"+props.vehicle_id+"/journeys/"+journey.id+"/passengers"}>{<PeopleAltIcon />}</Link>}</TableCell>
           <TableCell>
             <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
               {open ? <KeyboardArrowUpIcon />  : <React.Fragment>  <EditIcon /> </React.Fragment>}
