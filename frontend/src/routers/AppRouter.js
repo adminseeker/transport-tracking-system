@@ -23,6 +23,7 @@ import ForgotPassword from "../components/ForgotPassword";
 
 const history = createHistory();
 
+
 const AppRouter = ()=>{
     return(
         <Router history={history}>
