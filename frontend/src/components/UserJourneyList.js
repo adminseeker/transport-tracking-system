@@ -134,8 +134,8 @@ const Row = (props) => {
             {journey.starting_point}
           </TableCell>
           <TableCell >{journey.destination}</TableCell>
-          <TableCell >{moment(journey.start_time).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
-          <TableCell >{moment(journey.end_time).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
+          <TableCell >{journey.start_time}</TableCell>
+          <TableCell >{journey.end_time}</TableCell>
           <TableCell >{journey.vehicle_type}</TableCell>
           <TableCell >{journey.vehicle_name}</TableCell>
           <TableCell >{journey.vehicle_color}</TableCell>
