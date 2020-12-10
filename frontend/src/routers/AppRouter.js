@@ -17,6 +17,9 @@ import UserJourneyDetails from "../components/UserJourneyDetails";
 import Tracking from "../components/Tracking";
 import RegisterUpdater from "../components/RegisterUpdater";
 import RegisterPassenger from "../components/RegisterPassenger";
+import MyAccount from "../components/MyAccount";
+import ChangePassword from "../components/ChangePassword";
+import ForgotPassword from "../components/ForgotPassword";
 
 const history = createHistory();
 
@@ -27,9 +30,12 @@ const AppRouter = ()=>{
             <Switch>
                 <Route path="/" component={Landing} exact={true}/>
                 <Route path="/login" component={Login} exact={true} />
+                <Route path="/forgotpassword" component={ForgotPassword} exact={true}/>
                 <Route path="/register/updater" component={RegisterUpdater} exact={true} />
                 <Route path="/register/passenger" component={RegisterPassenger} exact={true} />
                 <PrivateRoute path="/dashboard" component={Dashboard} exact={true}/>
+                <PrivateRoute path="/account" component={MyAccount} exact={true}/>
+                <PrivateRoute path="/changepassword" component={ChangePassword} exact={true}/>
                 <PrivateRoute path="/vehicles/add" component={AddVehicles} exact={true}/>
                 <PrivateRoute path="/vehicles/edit/:id" component={EditVehicle} exact={true}/>
                 <PrivateRoute path="/vehicles/:id/journeys/" component={JourneyDashboard} exact={true}/>

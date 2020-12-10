@@ -101,4 +101,119 @@ const loadUser= ()=>{
     }
 }
 
-export {register,loadUser,login,logout};
+const updateAccount = (data)=>{
+    return async (dispatch)=>{
+        const config = {
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+
+        const body = JSON.stringify(data);
+        try {
+            await axios.patch("/api/users",body,config);
+            await dispatch(loadUser());
+        } catch (err) {
+            console.log(err);
+              dispatch({
+                type:"AUTH_ERROR"
+            })
+        }
+    }
+}
+
+const changePassword = ({password,newPassword})=>{
+    return async (dispatch)=>{
+        const config = {
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+
+        const body = JSON.stringify({password,newPassword});
+        try {
+            const res = await axios.patch("/api/users/password",body,config);
+            return res.data;
+            
+        } catch (err) {
+            console.log(err);
+              dispatch({
+                type:"ERROR"
+            })
+        }
+    }
+}
+
+const sendOtp = (email) =>{
+    return async(dispatch)=>{
+        const config = {
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+        const body = JSON.stringify({email});
+        try {
+            const res = await axios.post("/api/auth/sendotp",body,config);
+            dispatch({
+                type:"FORGOT_PASSWORD",
+                email:email
+            });
+            return res.data;
+        } catch (err) {
+            console.log(err);
+              dispatch({
+                type:"FORGOT_PASSWORD_ERROR"
+            })
+        }
+    }
+}
+
+const resetPassword = (email,otp,newPassword)=>{
+    return async(dispatch)=>{
+        const config = {
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+        const body = JSON.stringify({email,otp,newPassword});
+        try {
+            const res = await axios.post("/api/auth/resetpassword",body,config);
+            dispatch({
+                type:"FORGOT_PASSWORD",
+                email:""
+            });
+            return res.data;
+        } catch (err) {
+            console.log(err);
+              dispatch({
+                type:"FORGOT_PASSWORD_ERROR"
+            })
+        }
+    }
+}
+
+const deleteAccount = ()=>{
+    return async (dispatch)=>{
+        const config = {
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+        try {
+            const res = await axios.delete("/api/users/",config);
+            dispatch({
+                type:"LOGOUT"
+            });
+            return res.data;
+            
+        } catch (err) {
+            console.log(err);
+              dispatch({
+                type:"ERROR"
+            })
+        }
+    }
+
+}
+
+export {register,loadUser,login,logout,updateAccount,changePassword,deleteAccount,sendOtp,resetPassword};

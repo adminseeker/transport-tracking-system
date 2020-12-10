@@ -3,6 +3,8 @@ const express = require("express");
 const {mysql} = require("../../db/mysql");
 const auth = require("../../middleware/auth");
 
+const moment = require("moment");
+
 const router = express.Router();
 
 router.post("/:id",auth,async (req,res)=>{
@@ -35,6 +37,7 @@ router.get("/:id",auth,async (req,res)=>{
             }else{
                 const journeyString = JSON.stringify(results);
                 const journey = JSON.parse(journeyString);
+                
                 res.json(journey);
             }
         }else{

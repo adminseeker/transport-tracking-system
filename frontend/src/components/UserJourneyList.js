@@ -134,8 +134,8 @@ const Row = (props) => {
             {journey.starting_point}
           </TableCell>
           <TableCell >{journey.destination}</TableCell>
-          <TableCell >{journey.start_time}</TableCell>
-          <TableCell >{journey.end_time}</TableCell>
+          <TableCell >{moment(journey.start_time).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
+          <TableCell >{moment(journey.end_time).format('MMMM Do YYYY, h:mm:ss a')}</TableCell>
           <TableCell >{journey.vehicle_type}</TableCell>
           <TableCell >{journey.vehicle_name}</TableCell>
           <TableCell >{journey.vehicle_color}</TableCell>
@@ -198,7 +198,7 @@ const UserJourneyList = (props)=>{
       };
       return (
     props.journeys.length===0 ? <h3>No Journeys</h3> : (
-        <TableContainer component={Paper} style={{width:"60%"}}>
+        <TableContainer component={Paper} style={{width:"70%"}}>
         <Table aria-label="collapsible table">
         <TableHead>
             <TableRow>
