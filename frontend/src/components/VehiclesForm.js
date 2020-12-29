@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { FormControlLabel, Switch } from "@material-ui/core";
+import { FormControlLabel, Switch, Typography } from "@material-ui/core";
 import Button from '@material-ui/core/Button';
 import { removeVehicles } from "../actions/vehicles";
 import { connect } from "react-redux";
+
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,6 +20,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  
+  const CustomizedAlert = (props) => {
+    const classes = useStyles();
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      props.setOpen(false);
+    };
+  
+    return (
+      <div className={classes.root2}>
+        <Snackbar
+          open={props.open}
+          autoHideDuration={6000}
+          
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity={props.AlertType}>
+            <Typography variant="h5">
+              {props.msg}
+            </Typography>
+          </Alert>
+        </Snackbar>
+      </div>
+    );
+  }
+
 const VehiclesForm = (props)=>{
     const classes = useStyles();
     const [vehicle_name,set_vehicle_name] = useState(props.vehicle ? props.vehicle.vehicle_name: "");
@@ -24,8 +61,14 @@ const VehiclesForm = (props)=>{
     const [tracker_id,set_tracker_id] = useState(props.vehicle && props.vehicle.tracker_id!==null ? props.vehicle.tracker_id: null);
     const [isRunning,set_isRunning] = useState(props.vehicle  ? props.vehicle.isRunning: 0);
     const [error,setError] = useState("");
+    const [AlertMsg, setAlertMsg] = useState("");
+  const [AlertType, setAlertType] = useState("");
+  const [openAlert, setOpenAlert] = useState(false);
+
     return(
         <div>
+    <CustomizedAlert open={openAlert} msg={AlertMsg} AlertType={AlertType} setOpen={setOpenAlert}/>
+
             <form className={classes.root} onSubmit={(e)=>{
                 e.preventDefault();
                 if(!vehicle_name || !vehicle_type || !vehicle_color || !vehicle_number){
@@ -85,7 +128,16 @@ const VehiclesForm = (props)=>{
                     label="On Journey"
                 />
                 <Button variant="contained" color="primary" style={{float:"right"}} type="submit">Save</Button>
-               {props.vehicle && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{await props.dispatch(removeVehicles(props.vehicle.vehicle_id));}}>Remove</Button>}
+               {props.vehicle && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{
+                   let msg = await props.dispatch(removeVehicles(props.vehicle.vehicle_id));
+                    setOpenAlert(true);
+                    setAlertMsg(msg);
+                if(msg.includes("deleted")){
+                  setAlertType("success")  
+                }else{
+                  setAlertType("error")
+                }
+                }}>Remove</Button>}
 
             </form>
             

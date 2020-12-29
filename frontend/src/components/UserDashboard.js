@@ -8,6 +8,7 @@ import {getPassengerJourneys} from "../actions/journey";
 import UserJourneyList from "./UserJourneyList";
 import FacebookCircularProgress from "./FacebookCircularProgress";
 import { Typography } from "@material-ui/core";
+import PassengerJoin from "./PassengerJoin";
 
 const UserDashboard = ({user,vehicles,loading,getVehicles,getPassengerJourneys})=>{
         useEffect(()=>{
@@ -22,6 +23,8 @@ const UserDashboard = ({user,vehicles,loading,getVehicles,getPassengerJourneys})
                 Journey List
             </Typography>
             <UserJourneyList />
+        <PassengerJoin />
+
         </div>
     )
       )

@@ -11,20 +11,8 @@ const addVehicle = (vehicle)=>{
                 }
             }
             const res = await axios.post("/api/vehicles/",body,config);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
             await dispatch(getVehicles());
+            return res.data.msg;
         } catch (error) {
             console.log(error);
             dispatch({
@@ -96,20 +84,9 @@ const removeVehicles = (id)=>{
             }
             const res = await axios.delete("/api/vehicles/"+id,config);
             console.log(res.data);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
             await dispatch(getVehicles());
+            return res.data.msg;
+
         } catch (error) {
             console.log(error);
             dispatch({

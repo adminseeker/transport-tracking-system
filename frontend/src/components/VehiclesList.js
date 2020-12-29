@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import {connect} from "react-redux";
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -37,6 +37,9 @@ import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Link } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
+
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 const useRowStyles = makeStyles({
     root: {
@@ -82,6 +85,38 @@ const useRowStyles = makeStyles({
       right: theme.spacing(4),
     },
   }));
+
+  const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  
+  const CustomizedAlert = (props) => {
+    const classes = useStyles();
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      props.setOpen(false);
+    };
+  
+    return (
+      <div className={classes.root2}>
+        <Snackbar
+          open={props.open}
+          autoHideDuration={6000}
+          
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity={props.AlertType}>
+            <Typography variant="h5">
+              {props.msg}
+            </Typography>
+          </Alert>
+        </Snackbar>
+      </div>
+    );
+  }
   
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
@@ -164,9 +199,14 @@ const Row = (props) => {
   }
 
 const CustomizedDialogs = (props) => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const [AlertMsg, setAlertMsg] = useState("");
+  const [AlertType, setAlertType] = useState("");
+
   
     return (
       <div >
+    <CustomizedAlert open={openAlert} msg={AlertMsg} AlertType={AlertType} setOpen={setOpenAlert}/>
       
         <Dialog onClose={props.handleCloseDialog} aria-labelledby="customized-dialog-title" open={props.openDialog}>
           <DialogTitle id="customized-dialog-title" onClose={props.handleCloseDialog}>
@@ -178,7 +218,16 @@ const CustomizedDialogs = (props) => {
             </Typography>
             : 
             <Typography variant="h6" gutterBottom component="div">
-                <VehiclesForm  onSubmit={async (vehicle)=>{await props.dispatch(addVehicle(vehicle)); props.setOpenDialog(false);}}/>
+                <VehiclesForm  onSubmit={async (vehicle)=>{
+                let msg = await props.dispatch(addVehicle(vehicle)); props.setOpenDialog(false);
+                setOpenAlert(true)
+                setAlertMsg(msg);
+                if(msg.includes("Vehicle Added")){
+                  setAlertType("success")  
+                }else{
+                  setAlertType("error")
+                }
+                }}/>
                 </Typography>
           }
             
@@ -196,7 +245,7 @@ const CustomizedDialogs = (props) => {
 const VehiclesList = (props)=>{
   const [openTooltip, setOpenTooltip] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-
+  
   const handleCloseDialog = () => {
     setOpenTooltip(false);
   };
@@ -231,7 +280,8 @@ const VehiclesList = (props)=>{
         <CustomizedDialogs  handleCloseDialog={handleCloseDialog} openDialog={openTooltip} setOpenDialog={setOpenTooltip} addVehicle={true} dispatch={props.dispatch}/>
         <Tooltip title="Add Vehicle" aria-label="add" position="right" >
         <Fab color="primary" className={classes.fixed} onClick={handleClickOpenTooltip}>
-          <AddIcon />
+          
+        <AddIcon />
         </Fab>
       </Tooltip>
   </TableContainer>

@@ -11,20 +11,9 @@ const addJourney = (journey,id)=>{
                 }
             }
             const res = await axios.post("/api/journey/"+id,body,config);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
+            
             await dispatch(getJourneys(id));
+            ;
         } catch (error) {
             console.log(error);
             dispatch({
@@ -82,19 +71,7 @@ const editJourney = (journey,id1,id2)=>{
             }
             const res = await axios.patch("/api/journey/"+id1+"/"+id2,body,config);
             console.log(res.data);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
+            
             await dispatch(getJourneys(id1));
         } catch (error) {
             console.log(error);
@@ -114,19 +91,7 @@ const removeJourney = (id1,id2)=>{
                 }
             }
             const res = await axios.delete("/api/journey/"+id1+"/"+id2,config);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
+            
             await dispatch(getJourneys(id1));
         } catch (error) {
             console.log(error);

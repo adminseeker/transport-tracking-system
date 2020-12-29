@@ -222,7 +222,6 @@ const UserJourneyList = (props)=>{
         </TableBody>
         </Table>
         <CustomizedDialogs  vehicle_id={props.vehicle_id} handleCloseDialog={handleCloseDialog} openDialog={openTooltip} setOpenDialog={setOpenTooltip} addJourney={true} dispatch={props.dispatch}/>
-        <PassengerJoin />
   </TableContainer>
     )
     )
