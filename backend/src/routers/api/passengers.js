@@ -59,7 +59,7 @@ router.post("/:id1/:id2/passengers/invite",auth,async (req,res)=>{
             const journey = JSON.parse(journeyString);
         const emails = req.body.emails.splice(",").map((email)=>email.trim());
         if(emails.length==0){
-            return res.json({"msg":"No emails!"})
+            return res.json({"code":"0","msg":"No emails!"})
         }
         let emailHTML = "<h2>You have been invited to join Tracknet for this journey from "+journey.starting_point+" to "+journey.destination + " departure at " +moment(journey.start_time).format('MMMM Do YYYY, h:mm:ss a') +" and estimated arrival time is at "+moment(journey.end_time).format('MMMM Do YYYY, h:mm:ss a') + ".</h2>\n <p>Your invite code is:</p> ";
         let subject = "Invite Code for Tracknet";
@@ -71,7 +71,7 @@ router.post("/:id1/:id2/passengers/invite",auth,async (req,res)=>{
         invites.forEach(async (invite)=>{
             await mailer(invite.user_email,text="",html=emailHTML+"<h1>"+invite.invite_id+"</h1>",subject)
         })
-        res.json({"msg":"Invite Sent"});
+        res.json({"code":"1","msg":"Invite Sent"});
     } catch (error) {
         res.status(500).send("Server Error!");
         console.log(error);

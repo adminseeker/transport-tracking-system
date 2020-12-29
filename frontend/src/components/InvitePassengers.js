@@ -47,6 +47,38 @@ const useStyles = makeStyles((theme) => ({
       },
   }));
 
+  const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+  
+  const CustomizedAlert = (props) => {
+    const classes = useStyles();
+    const handleClose = (event, reason) => {
+      if (reason === "clickaway") {
+        return;
+      }
+      props.setOpen(false);
+    };
+  
+    return (
+      <div className={classes.root2}>
+        <Snackbar
+          open={props.open}
+          autoHideDuration={6000}
+          
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity={props.AlertType}>
+            <Typography variant="h5">
+              {props.msg}
+            </Typography>
+          </Alert>
+        </Snackbar>
+      </div>
+    );
+  }
+
   const InvitePassengers = (props) => {
     const [students,setStudents] =useState("");
     const [open, setOpen] = React.useState(false);
@@ -65,22 +97,25 @@ const useStyles = makeStyles((theme) => ({
 
   const handleSubmit = async () => {
       setOpen(false);
-      const msg = await props.dispatch(addPassengers(passengers,props.vehicle_id,props.journey_id));
-      if(String(msg)==="-1"){
+      const data = await props.dispatch(addPassengers(passengers,props.vehicle_id,props.journey_id));
+      if(String(data.code)==="0"){
+        setOpenAlert(true);
+        setAlertType("error");
+        setAlertMsg(data.msg);
+      }else if(String(data.code)==="1"){
+        setOpenAlert(true);
+        setAlertType("success");
+        setAlertMsg(data.msg);
+      }else{
         setOpenAlert(true);
         setAlertType("error");
         setAlertMsg("Invite Failed!");
-      }else if(String(msg)!==""){
-        setOpenAlert(true);
-        setAlertType("success");
-        setAlertMsg(msg);
-      }else if(String(msg)===""){
-        setOpen(true);
       }
   };
     const classes = useStyles();
     return (
         <div className={classes.root}>
+
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Invite Passengers</DialogTitle>
         <DialogContent>

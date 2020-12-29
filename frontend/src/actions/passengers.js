@@ -14,20 +14,9 @@ const addPassengers =  (passengers,id1,id2)=>{
             console.log(body);
             const res = await axios.post("/api/passengers/"+id1+"/"+id2+"/passengers/invite",body,config);
             console.log(res.data);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
+            
             await dispatch(getPassengers(id1,id2));
+            return res.data;
         } catch (error) {
             console.log(error);
             dispatch({
@@ -65,19 +54,7 @@ const removePassenger = (id1,id2,id3)=>{
                 }
             }
             const res = await axios.delete("/api/passengers/"+id1+"/"+id2+"/"+id3,config);
-            if(res.data.msg){
-                const id = uuid();
-                await dispatch({
-                type:"SET_ALERT",
-                alert:{msg:res.data.msg,alertType:"danger",id}
-            });
-            setTimeout(()=>{
-                dispatch({
-                    type:"REMOVE_ALERT",
-                    id
-                })
-            },3000)
-            }
+            
             await dispatch(getPassengers(id1,id2));
         } catch (error) {
             console.log(error);
