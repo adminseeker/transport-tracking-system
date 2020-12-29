@@ -88,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
     const [AlertType, setAlertType] = useState("");
 
   const handleClickOpen = () => {
+    set_invite_id("")
     setOpen(true);
   };
 
@@ -101,6 +102,7 @@ const useStyles = makeStyles((theme) => ({
           setOpenAlert(true);
           setAlertType("success");
           setAlertMsg("Joined Journey!");
+          console.log("invite_id",invite_id)
           await props.dispatch(getPassengerJourneys());
           setOpen(false);
         }else{
@@ -108,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
           setAlertType("error");
           setAlertMsg(res.msg);
         }
-    
+        
   };
     const classes = useStyles();
     return (
@@ -124,6 +126,7 @@ const useStyles = makeStyles((theme) => ({
             autoFocus
             margin="dense"
             id="name"
+            
             label={"Invite Code"}
             type="name"
             fullWidth

@@ -29,7 +29,7 @@ const AppRouter = ()=>{
         <Router history={history}>
             <Header />
             <Switch>
-                <Route path="/" component={Landing} exact={true}/>
+                <Route path="/" component={Login} exact={true}/>
                 <Route path="/login" component={Login} exact={true} />
                 <Route path="/forgotpassword" component={ForgotPassword} exact={true}/>
                 <Route path="/register/updater" component={RegisterUpdater} exact={true} />

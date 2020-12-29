@@ -150,14 +150,20 @@ const Row = (props) => {
     const { vehicle } = props;
     const [open, setOpen] = React.useState(false);
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [openAlert, setOpenAlert] = useState(false);
+  const [AlertMsg, setAlertMsg] = useState("");
+  const [AlertType, setAlertType] = useState("");
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
     const classes = useRowStyles();
+
+    
   
     return (
       <React.Fragment>
+    <CustomizedAlert open={openAlert} msg={AlertMsg} AlertType={AlertType} setOpen={setOpenAlert}/>
         <CustomizedDialogs vehicle_id={vehicle.vehicle_id} handleCloseDialog={handleCloseDialog} openDialog={openDialog} setOpenDialog={setOpenDialog} />
         <TableRow className={classes.root}>
           
@@ -187,7 +193,18 @@ const Row = (props) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box margin={1} >
                 <Typography variant="h6" gutterBottom component="div">
-                <VehiclesForm vehicle={vehicle} onSubmit={async (updates)=>{await props.dispatch(editVehicles(updates,vehicle.vehicle_id)); setOpen(false);}}/>
+                <VehiclesForm vehicle={vehicle} onSubmit={async (updates)=>{
+                  let data = await props.dispatch(editVehicles(updates,vehicle.vehicle_id)); 
+                  setOpenAlert(true);
+                  setAlertMsg(data.msg);
+                  if(data.code==="1"){
+                    setAlertType("success")
+                    setOpen(false);  
+                  }else{
+                    setAlertType("error")
+                  }
+                  }}
+                />
                 </Typography>
               </Box>
             </Collapse>
@@ -227,7 +244,7 @@ const CustomizedDialogs = (props) => {
                 }else{
                   setAlertType("error")
                 }
-                }}/>
+                }} />
                 </Typography>
           }
             
@@ -256,7 +273,18 @@ const VehiclesList = (props)=>{
   };
   
     return (
-        props.vehicles.length===0 ? <h3>No Vehicles</h3> : (
+        props.vehicles.length===0 ? 
+        <div>
+        <h3>No Vehicles</h3>
+        <CustomizedDialogs  handleCloseDialog={handleCloseDialog} openDialog={openTooltip} setOpenDialog={setOpenTooltip} addVehicle={true} dispatch={props.dispatch}/>
+        <Tooltip title="Add Vehicle" aria-label="add" position="right" >
+        <Fab color="primary" className={classes.fixed} onClick={handleClickOpenTooltip}>
+          
+        <AddIcon />
+        </Fab>
+      </Tooltip>
+        </div>
+        : (
         <TableContainer component={Paper} style={{width:"60%"}}>
         <Table aria-label="collapsible table">
         <TableHead>

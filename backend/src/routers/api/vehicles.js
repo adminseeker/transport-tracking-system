@@ -86,29 +86,29 @@ router.patch("/:id",auth,async (req,res)=>{
     try {
         if(req.user.isUpdater===1){
             if(JSON.stringify(req.body)=="{}")
-                return res.json({msg:"nothing to update"});
+                return res.json({code:"0",msg:"nothing to update"});
             const[results] = await mysql.query("SELECT * FROM vehicles JOIN updaters ON vehicles.id=updaters.vehicle_id WHERE updaters.vehicle_id = ? AND updaters.user_id = ?;",[req.params.id,req.user.id]);
             const vehicleString = JSON.stringify(results);
             const vehicle = JSON.parse(vehicleString);
             if(vehicle.length===0){
-                return res.json({msg:"no vehicle found!"});
+                return res.json({code:"0",msg:"no vehicle found!"});
             }
             else{
                 if(req.body.vehicle_number){
                     const[results] = await mysql.query("SELECT vehicle_number FROM vehicles WHERE vehicle_number = ?",[req.body.vehicle_number]);
                     if( results.length!==0 && results[0].vehicle_number===req.body.vehicle_number){
-                            return res.json({msg:"This vehicle number already exists!"});
+                            return res.json({code:"0",msg:"This vehicle number already exists!"});
                     }
                 } 
                 if(req.body.tracker_id){
                     const[results] = await mysql.query("SELECT tracker_id FROM vehicles WHERE tracker_id = ?",[req.body.tracker_id]);
                     if( results.length!==0 && results[0].tracker_id==req.body.tracker_id){
-                        return res.json({msg:"This tracker id already exists!"});
+                        return res.json({code:"0",msg:"This tracker id already exists!"});
                     }
                 }
                     
                 const[results] = await mysql.query("UPDATE vehicles SET ? WHERE vehicles.id = ?",[req.body,req.params.id]);
-                return res.json({msg:"update successfull!"});         
+                return res.json({code:"1",msg:"update successfull!"});         
                 
             }
         }else{

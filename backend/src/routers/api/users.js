@@ -91,11 +91,17 @@ router.patch("/password",auth,async (req,res)=>{
 
 router.delete("/",auth,async (req,res)=>{
     try {
+        if(req.user.isUpdater){
+            const[results1] = await mysql.query("SELECT vehicle_id FROM updaters WHERE user_id = ? ",[req.user.id])
+            const JSONstring = JSON.stringify(results1);
+            const result1 = JSON.parse(JSONstring);
+            const vehicle_ids = result1.map((item)=>item.vehicle_id)
 
+            const[results2] =await mysql.query("DELETE FROM vehicles WHERE id IN(?)",[vehicle_ids]);
+        }
         const[results] =await mysql.query("DELETE FROM users WHERE id = ?",[req.user.id]);
         const JSONstring = JSON.stringify(results);
         const result = JSON.parse(JSONstring);
-        console.log(result);
         if(result.affectedRows==1){
             return res.json({code:"1","msg":"User deleted Successfully!"});
         }

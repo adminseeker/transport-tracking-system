@@ -12,6 +12,7 @@ const addPassengers =  (passengers,id1,id2)=>{
                 }
             }
             console.log(body);
+            console.log("passengers",passengers)
             const res = await axios.post("/api/passengers/"+id1+"/"+id2+"/passengers/invite",body,config);
             console.log(res.data);
             

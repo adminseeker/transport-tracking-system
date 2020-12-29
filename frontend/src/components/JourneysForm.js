@@ -8,6 +8,12 @@ import { removeVehicles } from "../actions/vehicles";
 import { connect } from "react-redux";
 import { removeJourney } from "../actions/journey";
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
@@ -72,8 +78,20 @@ const JourneysForm = (props)=>{
     const [end_time,set_end_time] = useState(props.journey ? props.journey.end_time: new Date());
     const [isActive,set_isActive] = useState(props.journey  ? props.journey.isActive: 0);
     const [error,setError] = useState("");
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+
+  const handleDeleteDialog = async (e)=>{
+    setOpenDeleteDialog(false);
+    await props.dispatch(removeJourney(props.vehicle_id,props.journey.id));
+  }
+  
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
     return(
         <div>
+        
             <form className={classes.root} onSubmit={(e)=>{
                 e.preventDefault();
                 if(!starting_point || !destination || !start_time || !end_time){
@@ -128,8 +146,30 @@ const JourneysForm = (props)=>{
                     }
                     label="Active"
                 />
+                
                 <Button variant="contained" color="primary" style={{float:"right"}} type="submit">Save</Button>
-                {props.journey && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{await props.dispatch(removeJourney(props.vehicle_id,props.journey.id));}}>Remove</Button>}
+                {props.journey && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{setOpenDeleteDialog(true)}}>Remove</Button>}
+                <Dialog
+                  open={openDeleteDialog}
+                  onClose={handleCloseDeleteDialog}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+  >
+    <DialogTitle id="alert-dialog-title">{<Typography variant="h4">Are you sure you want to remove this passenger from this journey?</Typography>}</DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-description">
+        {<Typography variant="h5">This passenger will be removed from this journey permanently!</Typography>}
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleCloseDeleteDialog} color="primary">
+        No
+      </Button>
+      <Button onClick={handleDeleteDialog} color="secondary" autoFocus>
+        Yes
+      </Button>
+    </DialogActions>
+  </Dialog>
             </form>
             
         </div>

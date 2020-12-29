@@ -1,6 +1,5 @@
-import React from "react";
+import React,{useState} from "react";
 import {connect} from "react-redux";
-import JourneysListItem from "./JourneysListItem";
 import moment from "moment";
  
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,11 +14,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
-import VehiclesForm from "./VehiclesForm";
-import { editVehicles, removeVehicles, addVehicle } from "../actions/vehicles";
 import EditIcon from '@material-ui/icons/Edit';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -29,23 +25,53 @@ import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import CloseIcon from '@material-ui/icons/Close';
-import Tracking from "./Tracking";
 
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import { clearLocation } from "../actions/tracking";
 
 import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Link } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
-import { addJourney, editJourney } from "../actions/journey";
+import { addJourney, editJourney, removeJourney } from "../actions/journey";
 import JourneysForm from "./JourneysForm";
 
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 
 
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
+const Alert = (props) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const CustomizedAlert = (props) => {
+  const classes = useStyles();
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    props.setOpen(false);
+  };
+
+  return (
+    <div className={classes.root2}>
+      <Snackbar
+        open={props.open}
+        autoHideDuration={6000}
+        
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity={props.AlertType}>
+          <Typography variant="h5">
+            {props.msg}
+          </Typography>
+        </Alert>
+      </Snackbar>
+    </div>
+  );
+}
 
 const useRowStyles = makeStyles({
     root: {
@@ -124,14 +150,21 @@ const Row = (props) => {
     const { journey } = props;
     const [open, setOpen] = React.useState(false);
     const [openDialog, setOpenDialog] = React.useState(false);
+    const [openAlert, setOpenAlert] = useState(false);
+  const [AlertMsg, setAlertMsg] = useState("");
+  const [AlertType, setAlertType] = useState("");
+
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
     const classes = useRowStyles();
   
     return (
       <React.Fragment>
+    <CustomizedAlert open={openAlert} msg={AlertMsg} AlertType={AlertType} setOpen={setOpenAlert}/>
+    
         <CustomizedDialogs journey_id={journey.id} handleCloseDialog={handleCloseDialog} openDialog={openDialog} setOpenDialog={setOpenDialog} />
         <TableRow className={classes.root}>
           
@@ -154,8 +187,21 @@ const Row = (props) => {
             <Collapse in={open} timeout="auto" unmountOnExit>
               <Box margin={1} >
                 <Typography variant="h6" gutterBottom component="div">
-                    <JourneysForm vehicle_id={props.vehicle_id} journey={journey} onSubmit={async (updates)=>{await props.dispatch(editJourney(updates,props.vehicle_id,journey.id)); setOpen(false);}}/>
-                </Typography>
+                    <JourneysForm vehicle_id={props.vehicle_id} journey={journey} onSubmit={async (updates)=>{
+                      let data = await props.dispatch(editJourney(updates,props.vehicle_id,journey.id)); 
+                      setOpenAlert(true);
+                      setAlertMsg(data.msg);
+                      if(data.code==="1"){
+                        setAlertType("success")
+                        setOpen(false);  
+                      }else{
+                        setAlertType("error")
+                      }
+                    }}
+                    
+                    />
+                      
+                  </Typography>
               </Box>
             </Collapse>
           </TableCell>
@@ -166,9 +212,13 @@ const Row = (props) => {
   }
 
 const CustomizedDialogs = (props) => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const [AlertMsg, setAlertMsg] = useState("");
+  const [AlertType, setAlertType] = useState("");
   
     return (
       <div >
+    <CustomizedAlert open={openAlert} msg={AlertMsg} AlertType={AlertType} setOpen={setOpenAlert}/>
       
         <Dialog onClose={props.handleCloseDialog} aria-labelledby="customized-dialog-title" open={props.openDialog}>
           <DialogTitle id="customized-dialog-title" onClose={props.handleCloseDialog}>
@@ -177,7 +227,16 @@ const CustomizedDialogs = (props) => {
           <DialogContent dividers>
            
             <Typography variant="h6" gutterBottom component="div">
-            <JourneysForm onSubmit={async (journey)=>{await props.dispatch(addJourney(journey,props.vehicle_id)); props.setOpenDialog(false);}} />
+            <JourneysForm onSubmit={async (journey)=>{
+              let msg = await props.dispatch(addJourney(journey,props.vehicle_id)); 
+              setOpenAlert(true)
+                setAlertMsg(msg);
+                if(msg.includes("Journey Added")){
+                  setAlertType("success")  
+                }else{
+                  setAlertType("error")
+                }
+              props.setOpenDialog(false);}} />
             </Typography>
             
           </DialogContent>
@@ -206,7 +265,17 @@ const JourneysList = (props)=>{
     };
     
       return (
-          props.journeys.length===0 ? <h3>No Journeys</h3> : (
+          props.journeys.length===0 ? 
+          <div>
+          <h3>No Journeys</h3>
+          <CustomizedDialogs  vehicle_id={props.vehicle_id} handleCloseDialog={handleCloseDialog} openDialog={openTooltip} setOpenDialog={setOpenTooltip} addJourney={true} dispatch={props.dispatch}/>
+          <Tooltip title="Add Journey" aria-label="add" position="right" >
+          <Fab color="primary" className={classes.fixed} onClick={handleClickOpenTooltip}>
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+          </div> 
+          : (
           <TableContainer component={Paper} style={{width:"60%"}}>
           <Table aria-label="collapsible table">
           <TableHead>

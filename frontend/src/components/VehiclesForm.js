@@ -9,7 +9,11 @@ import { connect } from "react-redux";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +68,17 @@ const VehiclesForm = (props)=>{
     const [AlertMsg, setAlertMsg] = useState("");
   const [AlertType, setAlertType] = useState("");
   const [openAlert, setOpenAlert] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+
+  const handleDeleteDialog = async (e)=>{
+    setOpenDeleteDialog(false);
+    await props.dispatch(removeVehicles(props.vehicle.vehicle_id));
+  }
+  
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
 
     return(
         <div>
@@ -128,17 +143,28 @@ const VehiclesForm = (props)=>{
                     label="On Journey"
                 />
                 <Button variant="contained" color="primary" style={{float:"right"}} type="submit">Save</Button>
-               {props.vehicle && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={async (e)=>{
-                   let msg = await props.dispatch(removeVehicles(props.vehicle.vehicle_id));
-                    setOpenAlert(true);
-                    setAlertMsg(msg);
-                if(msg.includes("deleted")){
-                  setAlertType("success")  
-                }else{
-                  setAlertType("error")
-                }
-                }}>Remove</Button>}
-
+               {props.vehicle && <Button variant="contained" color="secondary" style={{float:"right"}} onClick={(e)=>setOpenDeleteDialog(true)}>Remove</Button>}
+               <Dialog
+               open={openDeleteDialog}
+               onClose={handleCloseDeleteDialog}
+               aria-labelledby="alert-dialog-title"
+               aria-describedby="alert-dialog-description"
+>
+ <DialogTitle id="alert-dialog-title">{<Typography variant="h4">Are you sure you want to remove this vehicle?</Typography>}</DialogTitle>
+ <DialogContent>
+   <DialogContentText id="alert-dialog-description">
+     {<Typography variant="h5">This vehicle will be removed permanently!</Typography>}
+   </DialogContentText>
+ </DialogContent>
+ <DialogActions>
+   <Button onClick={handleCloseDeleteDialog} color="primary">
+     No
+   </Button>
+   <Button onClick={handleDeleteDialog} color="secondary" autoFocus>
+     Yes
+   </Button>
+ </DialogActions>
+</Dialog>
             </form>
             
         </div>

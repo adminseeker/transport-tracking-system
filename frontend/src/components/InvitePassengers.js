@@ -80,14 +80,14 @@ const useStyles = makeStyles((theme) => ({
   }
 
   const InvitePassengers = (props) => {
-    const [students,setStudents] =useState("");
     const [open, setOpen] = React.useState(false);
     const [openAlert, setOpenAlert] = useState(false);
     const [AlertMsg, setAlertMsg] = useState("");
     const [AlertType, setAlertType] = useState("");
-    const [passengers,set_passengers] =useState("");
+    const [emails,set_emails] =useState("");
 
   const handleClickOpen = () => {
+    set_emails("");
     setOpen(true);
   };
 
@@ -95,9 +95,9 @@ const useStyles = makeStyles((theme) => ({
     setOpen(false);
   };
 
+
   const handleSubmit = async () => {
-      setOpen(false);
-      const data = await props.dispatch(addPassengers(passengers,props.vehicle_id,props.journey_id));
+      const data = await props.dispatch(addPassengers(emails,props.vehicle_id,props.journey_id));
       if(String(data.code)==="0"){
         setOpenAlert(true);
         setAlertType("error");
@@ -106,6 +106,8 @@ const useStyles = makeStyles((theme) => ({
         setOpenAlert(true);
         setAlertType("success");
         setAlertMsg(data.msg);
+      setOpen(false);
+
       }else{
         setOpenAlert(true);
         setAlertType("error");
@@ -115,6 +117,7 @@ const useStyles = makeStyles((theme) => ({
     const classes = useStyles();
     return (
         <div className={classes.root}>
+        <CustomizedAlert open={openAlert} msg={AlertMsg} AlertType={AlertType} setOpen={setOpenAlert}/>
 
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Invite Passengers</DialogTitle>
@@ -130,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
             type="name"
             fullWidth
             onChange={(e)=>{
-                set_passengers(e.target.value);
+                set_emails(e.target.value);
             }}
           />
         </DialogContent>

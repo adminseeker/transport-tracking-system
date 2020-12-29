@@ -14,7 +14,7 @@ const JourneyDashboard = ({user,journeys,getJourneys,vehicle_id})=>{
   
         <div style={{display:"flex",flexDirection:"column",alignItems:"center"}}>
             {user.isUpdater===1 && <h2>Journey List</h2>}
-            {user.isUpdater===1 && (journeys.length!==0 ? <JourneysList vehicle_id={vehicle_id}/> : <h2>No journey found!!</h2>) }
+            {user.isUpdater===1 && (<JourneysList vehicle_id={vehicle_id}/> ) }
         </div>
       )
 }

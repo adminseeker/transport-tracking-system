@@ -13,7 +13,7 @@ const addJourney = (journey,id)=>{
             const res = await axios.post("/api/journey/"+id,body,config);
             
             await dispatch(getJourneys(id));
-            ;
+            return res.data.msg;
         } catch (error) {
             console.log(error);
             dispatch({
@@ -73,6 +73,7 @@ const editJourney = (journey,id1,id2)=>{
             console.log(res.data);
             
             await dispatch(getJourneys(id1));
+            return res.data;
         } catch (error) {
             console.log(error);
             dispatch({

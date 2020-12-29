@@ -54,14 +54,14 @@ router.patch("/:id1/:id2",auth,async (req,res)=>{
         const journey= req.body;
         if(req.user.isUpdater===1){
             if(JSON.stringify(req.body)=="{}")
-                return res.json({msg:"nothing to update"});
+                return res.json({code:"0",msg:"nothing to update"});
             const[results,fields] = await mysql.query("SELECT * FROM journey INNER JOIN updaters ON updaters.vehicle_id = journey.vehicle_id  WHERE updaters.user_id = ? AND journey.id= ? AND journey.vehicle_id = ?",[req.user.id,req.params.id2,req.params.id1]);
             if( results.length==0){
-                return res.json({msg:"No journey found!"});
+                return res.json({code:"0",msg:"No journey found!"});
             }else{
                 delete req.body.vehicle_id;
                 const[results,fields] = await mysql.query("UPDATE journey SET ? WHERE journey.id = ?",[req.body,req.params.id2]);
-                res.json({msg:"update successfull!"});
+                res.json({code:"1",msg:"update successfull!"});
             }
         }else{
             res.json({msg:"Authorization Error!"});
